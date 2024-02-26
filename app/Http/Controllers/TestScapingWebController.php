@@ -28,12 +28,12 @@ class TestScapingWebController extends BaseController
         $doc = new DOMDocument();
         $doc->loadHTML($htmlString);
         $xpath = new DOMXPath($doc);
-
+        Log::info('[' . __METHOD__ . '] xpath ' . $xpath);
         $arrs = array();
 
-        $phaks = $xpath->evaluate('//div[@id="Tabs"]//div//table[@id="table"]//tbody//tr/td[1]');
+        $data = $xpath->evaluate('//div[@id="Tabs"]//div//table[@id="table"]//tbody//tr/td[1]');
         $prices = $xpath->evaluate('//div[@id="Tabs"]//div//table[@id="table"]//tbody//tr/td[3]');
-        foreach ($phaks as $key => $phak) {
+        foreach ($data as $key => $phak) {
             //echo $phak->textContent . " " . $prices[$key]->textContent . '<br/>';
 
             $arrs[$key]['phak'] = $phak->textContent;
