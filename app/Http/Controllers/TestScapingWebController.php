@@ -28,7 +28,6 @@ class TestScapingWebController extends BaseController
         $doc = new DOMDocument();
         $doc->loadHTML($htmlString);
         $xpath = new DOMXPath($doc);
-        Log::info('[' . __METHOD__ . '] xpath ' . $xpath);
         $arrs = array();
 
         $data = $xpath->evaluate('//div[@id="Tabs"]//div//table[@id="table"]//tbody//tr/td[1]');
