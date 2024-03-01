@@ -142,7 +142,7 @@ class ProductController extends BaseController
                     "unit_id"=> $unitId
                 );
 
-                $result = DB::table("proudcts")->insert($data);
+                $result = DB::table("products")->insert($data);
                 
                 $now = Carbon::now()->setTimezone("Asia/Bangkok");
 
