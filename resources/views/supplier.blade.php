@@ -84,7 +84,7 @@
          });
     });
 
-     function searchProduct() {
+     function searchSupplier() {
         loadingShow();
         let suppCodeSearch = $('#suppCodeSearch').val();
         let suppNameSearch = $('#suppNameSearch').val();
