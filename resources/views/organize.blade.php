@@ -16,7 +16,7 @@
                     <h4 class="m-0 font-weight-bold text-primary">Organization</h4>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <button type="button" class="btn btn-warning" onclick=" window.location = '/phak/public/organization/edit'">Edit</button>
+                    <button type="button" class="btn btn-warning" onclick=" window.location = '/organize/edit'">Edit</button>
                 </div>
             </div>
         </div>

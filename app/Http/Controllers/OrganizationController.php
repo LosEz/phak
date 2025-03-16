@@ -24,13 +24,13 @@ class OrganizationController extends BaseController
     {
         Log::info('[' . __METHOD__ . ']');
         $organization = $this->getOrganization(1)[0];
-        return view('organization', ["org" => $organization]);
+        return view('organize', ["org" => $organization]);
     }
 
     public function editData()
     {
         Log::info('[' . __METHOD__ . ']');
-        return view('organizationAdd');
+        return view('organizeAdd');
     }
 
 
@@ -66,7 +66,7 @@ class OrganizationController extends BaseController
         }
     }
 
-    public function addEditData(Request $request)
+    public function saveData(Request $request)
     {
         Log::info('[' . __METHOD__ . '] start ');
         try {

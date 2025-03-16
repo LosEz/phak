@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use DB;
-use Exception;
+use Illuminate\Support\Facades\DB;
+use FFI\Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends BaseController
@@ -46,7 +46,7 @@ class ActivityLogController extends BaseController
     {
         try {
            $data = array(
-            "act_func_id" => $funcId,
+            "func_id" => $funcId,
             "act_desc" => $actDesc,
             "act_type" => $actType,
             "act_date" => Carbon::now()->setTimezone("Asia/Bangkok")->format("Y-m-d H:i:s"),

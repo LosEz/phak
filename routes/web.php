@@ -85,10 +85,10 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::post('/edit', [OrderBuyController::class, 'editData']);
     });
 
-    Route::prefix('organization')->group(function () {
+    Route::prefix('organize')->group(function () {
         Route::get('/', [OrganizationController::class, 'index']);
         Route::get('/edit', [OrganizationController::class, 'editData']);
         Route::post('/save', [OrganizationController::class, 'saveData']);
     });
-    
+
 });
