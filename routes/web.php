@@ -90,4 +90,5 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::get('/edit', [OrganizationController::class, 'editData']);
         Route::post('/save', [OrganizationController::class, 'saveData']);
     });
+    
 });
