@@ -8,7 +8,7 @@
             <h4 class="m-0 font-weight-bold text-primary">Organization > Edit</h6>
         </div>
         <div class="card-body">
-            <form method="POST" action="organization/save">
+            <form method="POST" action="organizes/save">
                 @csrf
             <div class="row">
                 <div class="col-sm-6">
