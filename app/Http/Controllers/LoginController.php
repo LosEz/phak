@@ -8,9 +8,10 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Session;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends BaseController
 {
@@ -19,7 +20,7 @@ class LoginController extends BaseController
     public function index(){
         Log::info('['.__METHOD__.']');
         try{
-            Session::put('hasLogin', 0);
+            //Session::put('hasLogin', 0);
             return view("login");
         } catch (\Exception $ex) {
             Log::error('['.__METHOD__.']['.$ex->getFile().'][line : '.$ex->getLine().']['.$ex->getMessage().']');
@@ -37,9 +38,11 @@ class LoginController extends BaseController
 
             if(!empty($result)) {
                 Session::put('hasLogin', 1);
+                Session::put('userId', $username);
+
                 return redirect('product');
             } else {
-                return \Redirect::back()->withErrors(['msg' => 'Login Fail']);
+                return Redirect::back()->withErrors(['msg' => 'Login Fail']);
             }
         } catch (\Exception $ex){
             Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');

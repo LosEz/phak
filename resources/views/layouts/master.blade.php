@@ -184,6 +184,9 @@
     <!-- Page level custom scripts -->
     <!--script src="{{ asset('assets/js/demo/datatables-demo.js')}}"></script-->
 
+    <!-- Notify -->
+    <script src="{{ asset('assets/js/notify.js')}}"></script>
+
     <script>
     function loadingShow() {
         document.getElementById("overlay").style.display = "block";
@@ -192,6 +195,39 @@
     function loadingHide() {
         document.getElementById("overlay").style.display = "none";
     }
+
+    function alertSuccess(msg) {
+        $.notify(msg, "success");
+    }
+
+    function alertError(msg) {
+        $.notify(msg, "error");
+    }
+
+
+    $("#accordionSidebar>li").each(function() {
+        var navItem = $(this);
+
+        const arrayHost = navItem.find("a").attr("href").split('/');
+        //const lastsegmentHost = arrayHost[arrayHost.length-1];
+
+        const arrayPath = location.pathname.split('/');
+        //const lastsegment = array[array.length-1];
+
+        var count = 0;
+
+        for(var i = 0; i < arrayHost.length; i++) {
+            for(var j = 0; j < arrayPath.length; j++) {
+                if(arrayHost[i] == arrayPath[j]) {
+                    count++;
+                }
+            }
+        }
+
+        if(count == 4) {
+            navItem.addClass("active");
+        }
+    });
 </script>
 
 </body>

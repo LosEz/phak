@@ -12,11 +12,39 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
+
+             <!-- Divider -->
+             <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Orders
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('buyOrder') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Buy Order</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('sellOrder') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Sell Order</span></a>
+            </li>
+            
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Configuration
+            </div>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('product') }}">
@@ -40,6 +68,12 @@
                 <a class="nav-link" href="{{ url('pdf') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>gen pdf</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('organization') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Organization</span></a>
             </li>
 
             <!-- Divider -->
