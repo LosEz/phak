@@ -71,7 +71,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ url('organization') }}">
+                <a class="nav-link" href="{{ url('organize') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Organization</span></a>
             </li>
