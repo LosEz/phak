@@ -15,9 +15,6 @@
                 <div class="col-sm-6">
                     <h4 class="m-0 font-weight-bold text-primary">Organization</h4>
                 </div>
-                <div class="col-sm-6 text-right">
-                    <button type="button" class="btn btn-warning" onclick=" window.location = '/organizes/edit'">Edit</button>
-                </div>
             </div>
         </div>
 

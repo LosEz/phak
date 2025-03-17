@@ -24,29 +24,7 @@ class OrganizationController extends BaseController
     {
         Log::info('[' . __METHOD__ . ']');
         $organization = $this->getOrganization(1)[0];
-        return view('organize', ['org' => $organization]);
-    }
-
-    public function editData()
-    {
-        Log::info('[' . __METHOD__ . ']');
-        return view('organizeAdd');
-    }
-
-
-
-    public function searchData()
-    {
-        try {
-            $contacts = $this->getOrganization(1);
-
-            Log::info('[' . __METHOD__ . '] finish ');
-            return response()->json(['message' => "Success", 'contacts' => $contacts], 200);
-        } catch (Exception $ex) {
-
-            Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
-            return response()->json(['message' => $ex->getMessage()], 500);
-        }
+        return view('organizes', ['org' => $organization]);
     }
 
     private function  getOrganization($id)
@@ -63,88 +41,6 @@ class OrganizationController extends BaseController
         } catch (Exception $ex) {
             Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
             throw new Exception($ex->getMessage());
-        }
-    }
-
-    public function saveData(Request $request)
-    {
-        Log::info('[' . __METHOD__ . '] start ');
-        try {
-            DB::beginTransaction();
-            $conId = $request->input('conId');
-            $conCode = $request->input('conCode');
-            $conName = $request->input('conName');
-            $conType = $request->input('conType');
-            $conTaxId = $request->input('conTaxId');
-            $conSubType = $request->input('conSubType');
-            $conBusType = $request->input('conBusType');
-            $conCateType = $request->input('conCateType');
-            $conAddress = $request->input('conAddress');
-            $conPerson = $request->input('conPerson');
-            $conNumber = $request->input('conNumber');
-            $conBank = $request->input('conBank');
-            $conBankAccName = $request->input('conBankAccName');
-            $conBankAccNumber = $request->input('conBankAccNumber');
-            $type = $request->input('type');
-
-            $now = Carbon::now()->setTimezone("Asia/Bangkok");
-
-            $userId = Session::get('userId');
-
-            if ($type == "add") {
-                $data = array(
-                    "contact_code" => $conCode,
-                    "contact_name" => $conName,
-                    "contact_type" => $conType,
-                    "contact_tax_id" => $conTaxId,
-                    "contact_sub_type" => $conSubType,
-                    "contact_business_type" => $conBusType,
-                    "contact_category_type" => $conCateType,
-                    "contact_address" => $conAddress,
-                    "contact_person" => $conPerson,
-                    "contact_number" => $conNumber,
-                    "contact_bank" => $conBank,
-                    "contact_bank_account_name" => $conBankAccName,
-                    "contact_bank_account_number" => $conBankAccNumber,
-                    "contact_created_date" => $now,
-                    "contct_created_by" => $userId
-                );
-
-                $result = DB::table("contomers")->insert($data);
-            } else if ($type == "edit") {
-                $data = array(
-                    "contact_code" => $conCode,
-                    "contact_name" => $conName,
-                    "contact_type" => $conType,
-                    "contact_tax_id" => $conTaxId,
-                    "contact_sub_type" => $conSubType,
-                    "contact_business_type" => $conBusType,
-                    "contact_category_type" => $conCateType,
-                    "contact_address" => $conAddress,
-                    "contact_person" => $conPerson,
-                    "contact_number" => $conNumber,
-                    "contact_bank" => $conBank,
-                    "contact_bank_account_name" => $conBankAccName,
-                    "contact_bank_account_number" => $conBankAccNumber,
-                    "contact_updated_date" => $now,
-                    "contact_updated_by" => $userId
-                );
-
-                $result = DB::table("contomers")->where('contact_id', $conId)->update($data);
-            } else {
-                throw new Exception("Wrong mode");
-            }
-
-            $act = new ActivityLogController();
-            $act->insert($this->funcId, $type . " contacts " . $conName, $type, $userId);
-
-            Log::info('[' . __METHOD__ . '] finish ');
-            DB::commit();
-            return response()->json(['message' => "Success"], 200);
-        } catch (Exception $ex) {
-            DB::rollBack();
-            Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
-            return response()->json(['message' => $ex->getMessage()], 500);
         }
     }
 }

@@ -87,8 +87,6 @@ Route::group(['middleware' => ['haslogin']], function () {
 
     Route::prefix('organizes')->group(function () {
         Route::get('/', [OrganizationController::class, 'index']);
-        Route::get('/edit', [OrganizationController::class, 'editData']);
-        Route::post('/save', [OrganizationController::class, 'saveData']);
     });
 
 });
