@@ -24,7 +24,7 @@ class OrganizationController extends BaseController
     {
         Log::info('[' . __METHOD__ . ']');
         $organization = $this->getOrganization(1)[0];
-        return view('organizes', ['org' => $organization]);
+        return view('organize', ['org' => $organization]);
     }
 
     private function  getOrganization($id)
