@@ -13,14 +13,14 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <span>Role Name</span>
-                        <input class="form-control" id="roleName" />
+                        <input class="form-control" id="roleName" value="{{ $roles->role_name }}"/>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <span>Role Status</span>
-                        <select class="form-control" id="roleStatus">
-                            <option value="A" selected>Active</option>
+                        <select class="form-control" id="roleStatus" value="{{ $roles->role_status }}">
+                            <option value="A">Active</option>
                             <option value="D">Deactive</option>
                         </select>
                     </div>
@@ -48,14 +48,14 @@
                                 <tbody>
                                     @foreach($permissions as $key => $p)
                                         <tr class="text-center" >
-                                           <td>{{ $key + 1}} <input class="hide" name="funcId" value="{{$p->func_id}}"/></td>
-                                           <td class="text-left">{{ $f->func_name }}</td> 
-                                           <td><input type="checkbox" name="per_view" value="{{$p->is_view}}"/></td> 
-                                           <td><input type="checkbox" name="per_add" value="{{$p->is_add}}"/></td> 
-                                           <td><input type="checkbox" name="per_edit" value="{{$p->is_edit}}"/></td> 
-                                           <td><input type="checkbox" name="per_delete" value="{{$p->is_delete}}"/></td> 
-                                           <td><input type="checkbox" name="per_import" value="{{$p->is_import}}"/></td> 
-                                           <td><input type="checkbox" name="per_export" value="{{$p->is_export}}"/></td> 
+                                           <td>{{ $key + 1}} <input class="hide" name="perId" value="{{$p->id}}"/></td>
+                                           <td class="text-left">{{ $p->funcName }} <input class="hide" name="funcId" value="{{$p->func_id}}"/></td> 
+                                           <td><input type="checkbox" name="per_view" {{ $p->is_view == 1 ? "checked" : ""}}/></td> 
+                                           <td><input type="checkbox" name="per_add" {{ $p->is_add == 1 ? "checked" : ""}}/></td> 
+                                           <td><input type="checkbox" name="per_edit" {{ $p->is_edit == 1 ? "checked" : ""}}/></td> 
+                                           <td><input type="checkbox" name="per_delete" {{ $p->is_delete == 1 ? "checked" : ""}}/></td> 
+                                           <td><input type="checkbox" name="per_import" {{ $p->is_import == 1 ? "checked" : ""}}/></td> 
+                                           <td><input type="checkbox" name="per_export" {{ $p->is_export == 1 ? "checked" : ""}}/></td> 
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -103,12 +103,19 @@
     function saveRole() {
         loadingShow();
 
+        var roleId = {{ request()->id }};
         var roleName = $('#roleName').val();
         var roleStatus = $('#roleStatus').val();
 
         if(roleName === '') {
             alert("role name is required.");
             return "";
+        }
+
+        var perId = []
+        var checkboxes = document.querySelectorAll('input[name="perId"]')
+        for (var i = 0; i < checkboxes.length; i++) {
+            perId.push(checkboxes[i].value);
         }
 
         var funcId = []
@@ -156,12 +163,14 @@
         $.ajax(
             {
                 type: "POST",
-                url: '{{URL::to("roles/saveAdd")}}',
+                url: '{{URL::to("roles/saveEdit")}}',
                 data:
                 {
+                    roleId:roleId,
                     roleName: roleName,
                     roleStatus: roleStatus,
-                    funcId: funcId,
+                    perId: perId,
+                    funcId:funcId,
                     perView: perView,
                     perAdd: perAdd,
                     perEdit: perEdit,

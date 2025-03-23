@@ -41,11 +41,12 @@ class RoleController extends BaseController
         Log::info('[' . __METHOD__ . ']');
 
         $roles = DB::select("SELECT * FROM roles WHERE role_id = $id");
-        $permission = DB::select("SELECT * FROM permissions WHERE role_id = $id");
+        $permission = DB::select("SELECT p.*, f.func_name as funcName FROM permissions p
+        inner join func f on p.func_id = f.func_id WHERE p.role_id = $id order by id asc");
         if(empty($roles)) {
             return view('404');
         }
-        return view('roleEdit', ["roles" => $roles, "permissions" => $permission]);
+        return view('roleEdit', ["roles" => $roles[0], "permissions" => $permission]);
     }
 
     public function searchData(Request $request)
@@ -126,6 +127,62 @@ class RoleController extends BaseController
 
             $act = new ActivityLogController();
             $act->insert($this->funcId,  "Add roles " . $roleName, "Add", $userId);
+
+            Log::info('[' . __METHOD__ . '] finish ');
+            DB::commit();
+            return response()->json(['message' => "Success"], 200);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
+            return response()->json(['message' => $ex->getMessage()], 500);
+        }
+    }
+
+    public function editData(Request $request)
+    {
+        Log::info('[' . __METHOD__ . '] start ');
+        try {
+            DB::beginTransaction();
+            $roleId = $request->input('roleId');
+            $roleName = $request->input('roleName');
+            $roleStatus = $request->input('roleStatus');
+            $perId = $request->input('perId');
+            $funcId = $request->input('funcId');
+            $perView = $request->input('perView');
+            $perAdd = $request->input('perAdd');
+            $perEdit = $request->input('perEdit');
+            $perDelete = $request->input('perDelete');
+            $perImport = $request->input('perImport');
+            $perExport = $request->input('perExport');
+            $now = Carbon::now()->setTimezone("Asia/Bangkok");
+            $userId = Session::get('userId');
+
+            
+            $roles = DB::select("select * from roles where role_name = '$roleName' AND role_id != $roleId");
+
+            if(!empty($roles)) {
+                throw new Exception("Role Name : " . $roleName . " is duplicate.");
+            }
+
+            $roleArr = array("role_name" => $roleName, "role_status" => $roleStatus, "update_date" => $now, "update_by" => $userId);
+            $roleId = DB::table('roles')->where('role_id',"=",$roleId)->update( $roleArr );
+
+
+            for($i = 0; $i < count($perId); $i++) {
+
+                $data = array(
+                            "is_view" => $perView[$i] === 'true' ? true : false,
+                            "is_add" => $perAdd[$i] === 'true' ? true : false,
+                            "is_edit" => $perEdit[$i] === 'true' ? true : false,
+                            "is_delete" => $perDelete[$i] === 'true' ? true : false,
+                            "is_import" => $perImport[$i] === 'true' ? true : false,
+                            "is_export" => $perExport[$i] === 'true' ? true : false);
+
+                DB::table('permissions')->where('id',"=", $perId[$i])->update($data);
+            }
+
+            $act = new ActivityLogController();
+            $act->insert($this->funcId,  "Edit roles " . $roleName, "Edit", $userId);
 
             Log::info('[' . __METHOD__ . '] finish ');
             DB::commit();
