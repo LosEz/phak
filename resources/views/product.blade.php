@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -92,7 +93,6 @@
                             <th>No.</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
-                            <th>Product Price</th>
                             <th>Product Gtoup</th>
                             <th>Catgory</th>
                             <th>Unit Type</th>
@@ -123,7 +123,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>Product Code</span>
-                            <input class="form-control" id="proCode"/>
+                            <input class="form-control" id="proCode" />
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -137,12 +137,6 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <span>Product Price</span>
-                            <input class="form-control" id="proPrice" />
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
                             <span>Product Group</span>
                             <select class="form-control" id="proGroupCode">
                                     <option value="">Please select product group</option>
@@ -152,8 +146,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>Category</span>
@@ -165,6 +157,8 @@
                             </select>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>Unit Type</span>
@@ -234,13 +228,12 @@
                             (i + 1),
                             tempResp['proCode'],
                             tempResp['proName'],
-                            tempResp['proPrice'] + " ฿",
                             tempResp['proGroupName'],
                             tempResp['cateType'],
                             tempResp['unitType'],
                             `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" onclick="editModal('${ i }')"><i class="fas fa-info"></i></button>
-                                <button type="button" class="btn btn-warning btn-circle" onclick="editModal('${ i }')"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-info btn-circle" onclick="editModal('${ i }', true)"><i class="fas fa-info"></i></button>
+                                <button type="button" class="btn btn-warning btn-circle" onclick="editModal('${ i }', false)"><i class="fas fa-edit"></i></button>
                             </td>`
 
                         ]).draw().node();
@@ -248,11 +241,10 @@
                         $(rowNode).find('td').eq(0).addClass('text-center');
                         $(rowNode).find('td').eq(1).addClass('text-center');
                         $(rowNode).find('td').eq(2).addClass('text-left');
-                        $(rowNode).find('td').eq(3).addClass('text-right');
+                        $(rowNode).find('td').eq(3).addClass('text-center');
                         $(rowNode).find('td').eq(4).addClass('text-center');
                         $(rowNode).find('td').eq(5).addClass('text-center');
                         $(rowNode).find('td').eq(6).addClass('text-center');
-                        $(rowNode).find('td').eq(7).addClass('text-center');
                     }
                 } 
                 loadingHide();
@@ -270,7 +262,6 @@
         $('#title').html("Add Product");
         $('#proCode').val("").prop('disabled', false);
         $('#proName').val("");
-        $('#proPrice').val("");
         $('#proGroupCode').val("");
         $('#productCate').val("");
         $('#productUnit').val("");
@@ -280,27 +271,37 @@
 
     }
 
-    function editModal(id) {
-
+    function editModal(id , checkDisabled) {
             let data = items[id];
             $('#title').html("Edit Product : " + data['proName']);
             $('#proCode').val(data['proCode']).prop('disabled',true);
             $('#proName').val(data['proName']);
-            $('#proPrice').val(data['proPrice']);
             $('#proGroupCode').val(data['proGroupCode']);
             $('#productCate').val(data['cateId']);
             $('#productUnit').val(data['unitId']);
             $('#editBtn').removeClass('hide');
             $('#addBtn').addClass('hide');
-            $('#addEditModal').modal();
 
+            actionDisabled(checkDisabled);
+
+            $('#addEditModal').modal();
         }
+
+    function actionDisabled(checkDisabled) {
+            $('#proName').prop('disabled',checkDisabled);
+            $('#proGroupCode').prop('disabled',checkDisabled);
+            $('#productCate').prop('disabled',checkDisabled);
+            $('#productUnit').prop('disabled',checkDisabled);
+
+            if(checkDisabled) {
+                $('#editBtn').addClass('hide');
+            }
+    }
 
     function saveData(type) {
         loadingShow();
         let proCode = $('#proCode').val();
         let proName = $('#proName').val();
-        let proPrice = $('#proPrice').val();
         let proGroupCode = $('#proGroupCode').val();
         let proCate = $('#productCate').val();
         let proUnit = $('#productUnit').val();
@@ -313,7 +314,6 @@
                 {
                     proCode: proCode,
                     proName: proName,
-                    proPrice: proPrice,
                     proGroupCode: proGroupCode,
                     proCate: proCate,
                     proUnit: proUnit,
@@ -321,11 +321,12 @@
                     _token: '{!! csrf_token() !!}'
                 },
                 success: function (result) {
+                    $("#addEditModal").modal('hide');
                     searchProduct();
 
                 },
                 error: function (result) {
-                    console.log(result)
+                    console.log(result.responseText);
                     loadingHide();
                 }
             });

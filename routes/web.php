@@ -10,6 +10,7 @@ use App\Http\Controllers\CreatePdfController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderBuyController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,18 +58,10 @@ Route::group(['middleware' => ['haslogin']], function () {
     Route::get('/scaping', [TestScapingWebController::class, 'index']);
     Route::get('scapping/genData', [TestScapingWebController::class, 'genData']);
 
-    Route::prefix('product')->group(function () {
+    Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/search', [ProductController::class, 'searchData']);
         Route::post('/addEdit', [ProductController::class, 'addEditData']);
-    });
-
-    Route::prefix('supplier')->group(function () {
-        Route::get('/', [SupplierController::class, 'index']);
-        Route::post('/search', [SupplierController::class, 'searchData']);
-        Route::get('/add', [SupplierController::class, 'createSupplier'])->name('create');
-        Route::post('/save', [SupplierController::class, 'addEditData']);
-        Route::get('/edit/{id}', [SupplierController::class, 'editSupplier']);
     });
 
     Route::prefix('contacts')->group(function () {
@@ -77,16 +70,16 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::post('/addEdit', [ContactController::class, 'addEditData']);
     });
 
-    Route::prefix('buyOrder')->group(function () {
-        Route::get('/', [OrderBuyController::class, 'index']);
-        Route::post('/search', [OrderBuyController::class, 'searchData']);
-        Route::get('/add', [OrderBuyController::class, 'createOrderBuy'])->name('create');
-        Route::post('/save', [OrderBuyController::class, 'addData']);
-        Route::post('/edit', [OrderBuyController::class, 'editData']);
-    });
-
     Route::prefix('organizes')->group(function () {
         Route::get('/', [OrganizationController::class, 'index']);
     });
 
+    Route::prefix('roles')->group(function () {
+        Route::get('/', [RoleController::class, 'index']);
+        Route::get('/add', [RoleController::class, 'pageAdd']);
+        Route::get('/edit/{id}', [RoleController::class, 'pageEdit']);
+        Route::post('/saveAdd', [RoleController::class,'addData']);
+        Route::post('/saveEdit', [RoleController::class,'editData']);
+        route::post('/search',[RoleController::class, 'searchData']);
+    });
 });

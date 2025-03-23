@@ -1,90 +1,46 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="javascript:void(0)">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-carrot"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Baanphak</div>
+                <div class="sidebar-brand-text mx-3">Farm Phak-U-Dee</div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
+            @foreach(Session::get('func') as $key => $menu)
 
-             <!-- Divider -->
-             <hr class="sidebar-divider">
+                @if($menu->func_id == '0001')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('dashboard') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a>
+                </li>
+                @elseif($menu->func_sub_menu == 0)
+              
+                 <!-- Divider -->
+                    <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Orders
-            </div>
+                    <!-- Heading -->
+                    <div class="sidebar-heading">
+                        {{ $menu->func_name }}
+                    </div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('buyOrder') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Buy Order</span></a>
-            </li>
+                @else
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('') }}/{{ $menu->func_url }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>{{ $menu->func_name }}</span></a>
+                </li>
+                @endif
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('sellOrder') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Sell Order</span></a>
-            </li>
+            @endforeach
             
-            <!-- Divider -->
-            <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Configuration
-            </div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('product') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Products</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('supplier') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Suppliers</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('scaping') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>scaping web</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('pdf') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>gen pdf</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('organizes') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Organization</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
+            {{-- <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -163,7 +119,7 @@
             </li>
 
             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+            <hr class="sidebar-divider d-none d-md-block"> --}}
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

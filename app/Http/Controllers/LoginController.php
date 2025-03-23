@@ -40,7 +40,9 @@ class LoginController extends BaseController
                 Session::put('hasLogin', 1);
                 Session::put('userId', $username);
 
-                return redirect('product');
+                $func = DB::select("SELECT * FROM func");
+                Session::put('func',$func);
+                return redirect('products');
             } else {
                 return Redirect::back()->withErrors(['msg' => 'Login Fail']);
             }

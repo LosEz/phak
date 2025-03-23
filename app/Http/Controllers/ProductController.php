@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -10,13 +9,17 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 use Illuminate\Support\Carbon;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ActivityLogController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class ProductController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    private $funcId = "0202";
 
     public function index(){
         Log::info('['.__METHOD__.']');
@@ -59,7 +62,6 @@ class ProductController extends BaseController
             $sql = "SELECT
                         p.product_code as proCode,
                         p.product_name as proName,
-                        p.product_price as proPrice,
                         pg.product_group_name as proGroupName,
                         cate.cate_type as cateType,
                         ut.unit_type as unitType,
@@ -104,50 +106,51 @@ class ProductController extends BaseController
         }
     }
 
-    public function createProduct(Request $request)
-    {
-
-        try {
-            Log::info('[' . __METHOD__ . '] finish ');
-            return view('productDetail');
-
-        } catch (Exception $ex) {
-
-            Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
-            return response()->json(['message' => $ex->getMessage()], 500);
-
-        }
-
-    }
-
     public function addEditData(Request $request) {
-
+        Log::info('[' . __METHOD__ . '] start ');
         try {
             DB::beginTransaction();
 
                 $proCode = $request->input('proCode');
                 $proName = $request->input('proName');
-                $proPrice = $request->input('proPrice');
                 $proGroupCode = $request->input('proGroupCode');
                 $cateId = $request->input('proCate');
                 $unitId = $request->input('proUnit');
                 $type = $request->input('type');
 
-                $data = array(
-                    "product_code" => $proCode,
-                    "product_name" => $proName,
-                    "product_price" => $proPrice,
-                    "product_group_code" => $proGroupCode,
-                    "cate_id"=> $cateId,
-                    "unit_id"=> $unitId
-                );
-
-                $result = DB::table("products")->insert($data);
-                
                 $now = Carbon::now()->setTimezone("Asia/Bangkok");
 
+                $userId = Session::get('userId');
+
+                if($type == "add") {
+                    $data = array(
+                        "product_code" => $proCode,
+                        "product_name" => $proName,
+                        "product_group_code" => $proGroupCode,
+                        "cate_id"=> $cateId,
+                        "unit_id"=> $unitId,
+                        "create_date" => $now,
+                        "create_by" => $userId
+                    );
+
+                    $result = DB::table("products")->insert($data);
+                } else if($type == "edit"){
+                    $data = array(
+                        "product_name" => $proName,
+                        "product_group_code" => $proGroupCode,
+                        "cate_id"=> $cateId,
+                        "unit_id"=> $unitId,
+                        "update_date" => $now,
+                        "update_by" => $userId
+                    );
+
+                    $result = DB::table("products")->where('product_code', $proCode)->update($data);
+                } else {
+                    throw new Exception("Wrong mode");
+                }
+
                 $act = new ActivityLogController();
-                $act->insert("1", $type . " product " . $proName, $now, "koon");
+                $act->insert( $this->funcId, $type . " product " . $proName, $type, $userId);
 
                 Log::info('[' . __METHOD__ . '] finish ');
                 DB::commit();
@@ -157,7 +160,6 @@ class ProductController extends BaseController
             DB::rollBack();
             Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
             return response()->json(['message' => $ex->getMessage()], 500);
-            
         }
  
     }
