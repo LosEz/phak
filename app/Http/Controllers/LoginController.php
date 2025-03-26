@@ -40,7 +40,12 @@ class LoginController extends BaseController
                 Session::put('hasLogin', 1);
                 Session::put('userId', $username);
 
-                $func = DB::select("SELECT * FROM func");
+                $users = DB::select("SELECT * FROM users where id = $result->user_id")[0];
+
+                $func = DB::select("select p.func_id, f.func_name, f.func_sub_menu, f. func_url , p.is_add, p.is_edit, p.is_delete, p.is_import, p.is_export from permissions p 
+                                inner join func f on p.func_id = f.func_id
+                                WHERE p.is_view = true and p.role_id = $users->role_id");
+
                 Session::put('func',$func);
                 return redirect('products');
             } else {

@@ -107,7 +107,7 @@
                             tempResp['roleId'],
                             tempResp['roleName'],
                             `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" onclick="window.location.href='{{ url('roles') }}/edit/${tempResp['roleId']}'"><i class="fas fa-info"></i></button>
+                                <button type="button" class="btn btn-danger btn-circle" onclick="window.location.href='{{ url('roles') }}/edit/${tempResp['roleId']}'"><i class="fas fa-edit"></i></button>
                             </td>`
 
                         ]).draw().node();

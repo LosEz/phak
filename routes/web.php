@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderBuyController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,5 +82,13 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::post('/saveAdd', [RoleController::class,'addData']);
         Route::post('/saveEdit', [RoleController::class,'editData']);
         route::post('/search',[RoleController::class, 'searchData']);
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UsersController::class, 'index']);
+        Route::post('/search', [UsersController::class, 'searchData']);
+        Route::get('/add', [UsersController::class, 'pageAdd']);
+        Route::get('/edit/{id}', [UsersController::class, 'pageEdit']);
+        Route::post('/save', [UsersController::class, 'addEditData']);
     });
 });

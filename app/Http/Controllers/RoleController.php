@@ -31,7 +31,7 @@ class RoleController extends BaseController
     {
         Log::info('[' . __METHOD__ . ']');
 
-        $func = DB::select("SELECT * FROM func");
+        $func = DB::select("SELECT * FROM func where func_sub_menu != 0");
 
         return view('roleAdd', ['func' => $func]);
     }
@@ -42,7 +42,7 @@ class RoleController extends BaseController
 
         $roles = DB::select("SELECT * FROM roles WHERE role_id = $id");
         $permission = DB::select("SELECT p.*, f.func_name as funcName FROM permissions p
-        inner join func f on p.func_id = f.func_id WHERE p.role_id = $id order by id asc");
+        inner join func f on p.func_id = f.func_id WHERE p.role_id = $id AND f.func_sub_menu != 0 order by id asc");
         if(empty($roles)) {
             return view('404');
         }

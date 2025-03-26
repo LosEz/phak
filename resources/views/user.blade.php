@@ -46,7 +46,7 @@
                     <h3>Role List</h3>
                 </div>
                 <div class="col-sm-6" style="text-align: right;">
-                    <button class="btn btn-info" onclick="window.location.href='/phak/public/users/add'">Add</button>
+                    <button class="btn btn-info" onclick="window.location.href='{{ url('users/add')}}'">Add</button>
                 </div>
             </div>
 
@@ -85,32 +85,34 @@
         });
     });
 
-    function searchRole() {
+    function searchUsers() {
         loadingShow();
-        let roleName = $('#roleName').val();
+        let usrCode = $('#usrCode').val();
+        let usrName = $('#usrName').val();
 
         $.ajax({
             type: "POST",
-            url: '{{URL::to("role/search")}}',
+            url: '{{URL::to("users/search")}}',
             data: {
-                roleName: roleName,
+                usrCode: usrCode,
+                usrName: usrName,
                 _token: '{!! csrf_token() !!}'
             },
             success: function(result) {
                 tablelist.clear().draw();
                 items = [];
-                if (result['roles'].length > 0) {
-                    let data = result['roles'];
+                if (result['users'].length > 0) {
+                    let data = result['users'];
                     items = data;
 
                     for (var i = 0; i < data.length; i++) {
-                        tempResp = result['roles'][i];
+                        tempResp = result['users'][i];
                         var rowNode = tablelist.row.add([
                             (i + 1),
-                            tempResp['roleId'],
+                            tempResp['fullname'],
                             tempResp['roleName'],
                             `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" onclick="window.location='/role/add'"><i class="fas fa-info"></i></button>
+                                <button type="button" class="btn btn-danger btn-circle" onclick="window.location='{{url("users/edit")}}/${tempResp['id']}'"><i class="fas fa-edit"></i></button>
                             </td>`
 
                         ]).draw().node();
