@@ -39,6 +39,23 @@
             @endforeach
             
 
+            <hr class="sidebar-divider my-0">
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">
+                template
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('scaping') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>scaping</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('pdf') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>pdf</span></a>
+            </li>
+
 
             {{-- <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">

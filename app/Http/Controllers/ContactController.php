@@ -26,16 +26,33 @@ class ContactController extends BaseController
         return view('contact');
     }
 
+    public function pageAdd()
+    {
+        Log::info('[' . __METHOD__ . ']');
+
+        return view('contactAdd');
+    }
+
+    public function pageEdit($id = 0)
+    {
+        Log::info('[' . __METHOD__ . ']');
+
+        $contact = DB::select("SELECT * FROM contacts WHERE id = $id");
+        if(empty($contact)) {
+            return view('404');
+        }
+        return view('contactEdit', ["contact" => $contact[0]]);
+    }
 
     public function searchData(Request $request)
     {
 
         try {
-            $conCode = $request->input('contactCode');
-            $conName = $request->input('contactName');
-            $conTaxId = $request->input('contactTaxId');
+            $conCode = $request->input('conCodeSearch');
+            $conName = $request->input('conNameSearch');
+            $conTaxId = $request->input('conTaxIdSearch');
 
-            $contacts = $this->getcontomers($conCode, $conName, $conTaxId );
+            $contacts = $this->getContacts($conCode, $conName, $conTaxId );
 
             Log::info('[' . __METHOD__ . '] finish ');
             return response()->json(['message' => "Success", 'contacts' => $contacts], 200);
@@ -49,36 +66,27 @@ class ContactController extends BaseController
     private function  getContacts($conCode, $conName, $conTaxId)
     {
         try {
-            $sql = "SELECT c.contact_id as conId,
-                        c.contact_code as conCode,
-                        c.contact_type as conType,
-                        c.contact_tax_id as conTaxId,
-                        c.contact_name as conName,
-                        c.contact_sub_type as conSubType,
-                        c.contact_bussiness_type as conBusType,
-                        c.contact_category_type as conCateType,
-                        c.contact_address as conAddress,
-                        c.contact_person as conPerson,
-                        c.contact_number as conNumber,
-                        c.contact_bank as conBank,
-                        c.contact_bank_account_name as conBackAccName,
-                        c.contact_bank_account_number as conBackAccNumber,
-                        c.contact_created_Date as conCreatedDate,
-                        c.contact_created_by as conCreatedBy,
-                        c.contact_updated_date as conUpdatedDate,
-                        c.contact_update_by as conUpdateBy
-                    FROM contact c";
+            $sql = "select
+                        c.id as conId,
+                        c.ct_contact_code as conCode,
+                        case when c.ct_bus_type = 'H' then c.ct_bus_name else concat(c.ct_addr_contact_name) end as conName,
+                        case when c.ct_bus_cate_type = 'N' then 'นิติบุคคล' else 'บุคคลธรรมดา' end as contactType,
+                        c.ct_contact_phone as conPhone,
+                        case when c.ct_updated_date != null then DATE_FORMAT(c.ct_updated_date, '%d/%m/%Y') else DATE_FORMAT(c.ct_created_date , '%d/%m/%Y') end as lastDate,
+                        case when c.ct_updated_by != null then c.ct_updated_by else c.ct_created_by  end as lastBy
+                    from
+                        contacts c";
 
             if ($conCode != null || $conCode != "") {
-                $sql .= " AND c.contact_code = '$conCode'";
+                $sql .= " AND c.ct_contact_code = '$conCode'";
             }
 
             if ($conName != null || $conName != "") {
-                $sql .= " AND c.contact_name like '%$conName%'";
+                $sql .= " AND (c.ct_bus_name like '%$conName%' OR c.ct_addr_contact_name like '%$conName%')";
             }
 
             if ($conTaxId != null || $conTaxId != "") {
-                $sql .= " AND c.contact_tax_id = '$conTaxId'";
+                $sql .= " AND c.ct_bus_tax_id = '$conTaxId'";
             }
 
             $sql = preg_replace("/AND/", "WHERE ", $sql, 1);
@@ -96,20 +104,34 @@ class ContactController extends BaseController
         Log::info('[' . __METHOD__ . '] start ');
         try {
             DB::beginTransaction();
-            $conId = $request->input('conId');
-            $conCode = $request->input('conCode');
-            $conName = $request->input('conName');
-            $conType = $request->input('conType');
-            $conTaxId = $request->input('conTaxId');
-            $conSubType = $request->input('conSubType');
-            $conBusType = $request->input('conBusType');
-            $conCateType = $request->input('conCateType');
-            $conAddress = $request->input('conAddress');
-            $conPerson = $request->input('conPerson');
-            $conNumber = $request->input('conNumber');
-            $conBank = $request->input('conBank');
-            $conBankAccName = $request->input('conBankAccName');
-            $conBankAccNumber = $request->input('conBankAccNumber');
+            $conId = $request->input('contactId');
+            $contactType = $request->input('contactType');
+            $conCode = $request->input('contactCode');
+            $conNation = $request->input('nation');
+            $taxId = $request->input('taxId');
+            $busType = $request->input('busType');
+            $busCateType = $request->input('busCateType');
+            $busBranch = $request->input('busBranch');
+            $businessType = $request->input('businessType');
+            $busName = $request->input('busName');
+            $titleName = $request->input('titleName');
+            $firstName = $request->input('firstName');
+            $lastName = $request->input('lastName');
+            $individualType = $request->input('individualType');
+            $conName = $request->input('contactName');
+            $conAddress = $request->input('contactAddress');
+            $conSubDistrict = $request->input('contactSubDistrict');
+            $conDistrict = $request->input('contactDistrict');
+            $conProvince = $request->input('contactProvince');
+            $conPostalCode = $request->input('contactPost');
+            $conEmail = $request->input('contactEmail');
+            $conPhone = $request->input('contactPhone');
+            $conWeb = $request->input('contactWeb');
+            $conFax = $request->input('contactFax');
+            $conBank = $request->input('contactBank');
+            $conBankAccName = $request->input('contactBankName');
+            $conBankAccNumber = $request->input('contactBankNumber');
+            $conBankBranch = $request->input('contactBankBranch');
             $type = $request->input('type');
 
             $now = Carbon::now()->setTimezone("Asia/Bangkok");
@@ -118,44 +140,68 @@ class ContactController extends BaseController
 
             if ($type == "add") {
                 $data = array(
-                    "contact_code" => $conCode,
-                    "contact_name" => $conName,
-                    "contact_type" => $conType,
-                    "contact_tax_id" => $conTaxId,
-                    "contact_sub_type" => $conSubType,
-                    "contact_business_type" => $conBusType,
-                    "contact_category_type" => $conCateType,
-                    "contact_address" => $conAddress,
-                    "contact_person" => $conPerson,
-                    "contact_number" => $conNumber,
-                    "contact_bank" => $conBank,
-                    "contact_bank_account_name" => $conBankAccName,
-                    "contact_bank_account_number" => $conBankAccNumber,
-                    "contact_created_date" => $now,
-                    "contct_created_by" => $userId
+                    "ct_nation" => $conNation,
+                    "ct_contact_type" => $contactType,
+                    "ct_contact_code" => $conCode,
+                    "ct_bus_tax_id" => $taxId,
+                    "ct_bus_type" => $busType,
+                    "ct_bus_branch" => $busBranch,
+                    "ct_bus_cate_type" => $busCateType,
+                    "ct_business_type" => $businessType,
+                    "ct_bus_name" => $busName,
+                    "ct_individual_type" => $individualType,
+                    "ct_title_name" => $titleName,
+                    "ct_first_name" => $firstName,
+                    "ct_last_name" => $lastName,
+                    "ct_addr_contact_name" => $conName,
+                    "ct_addr_address" => $conAddress,
+                    "ct_addr_sub_district" => $conSubDistrict,
+                    "ct_addr_district" => $conDistrict,
+                    "ct_addr_province" => $conProvince,
+                    "ct_addr_postcode" => $conPostalCode,
+                    "ct_contact_email" => $conEmail,
+                    "ct_contact_phone" => $conPhone,
+                    "ct_contact_website" => $conWeb,
+                    "ct_contact_fax" => $conFax,
+                    "ct_bank_name" => $conBank,
+                    "ct_bank_account_name" => $conBankAccName,
+                    "ct_bank_account_number" => $conBankAccNumber,
+                    "ct_bank_branch" => $conBankBranch,
+                    "ct_created_date" => $now,
+                    "ct_created_by" => $userId
                 );
 
-                $result = DB::table("contomers")->insert($data);
+                $result = DB::table("contacts")->insertGetId($data);
             } else if ($type == "edit") {
                 $data = array(
-                    "contact_code" => $conCode,
-                    "contact_name" => $conName,
-                    "contact_type" => $conType,
-                    "contact_tax_id" => $conTaxId,
-                    "contact_sub_type" => $conSubType,
-                    "contact_business_type" => $conBusType,
-                    "contact_category_type" => $conCateType,
-                    "contact_address" => $conAddress,
-                    "contact_person" => $conPerson,
-                    "contact_number" => $conNumber,
-                    "contact_bank" => $conBank,
-                    "contact_bank_account_name" => $conBankAccName,
-                    "contact_bank_account_number" => $conBankAccNumber,
-                    "contact_updated_date" => $now,
-                    "contact_updated_by" => $userId
+                    "ct_bus_type" => $busType,
+                    "ct_bus_branch" => $busBranch,
+                    "ct_bus_cate_type" => $busCateType,
+                    "ct_business_type" => $businessType,
+                    "ct_bus_name" => $busName,
+                    "ct_individual_type" => $individualType,
+                    "ct_title_name" => $titleName,
+                    "ct_first_name" => $firstName,
+                    "ct_last_name" => $lastName,
+                    "ct_addr_contact_name" => $conName,
+                    "ct_addr_address" => $conAddress,
+                    "ct_addr_sub_district" => $conSubDistrict,
+                    "ct_addr_district" => $conDistrict,
+                    "ct_addr_province" => $conProvince,
+                    "ct_addr_postcode" => $conPostalCode,
+                    "ct_contact_email" => $conEmail,
+                    "ct_contact_phone" => $conPhone,
+                    "ct_contact_website" => $conWeb,
+                    "ct_contact_fax" => $conFax,
+                    "ct_bank_name" => $conBank,
+                    "ct_bank_account_name" => $conBankAccName,
+                    "ct_bank_account_number" => $conBankAccNumber,
+                    "ct_bank_branch" => $conBankBranch,
+                    "ct_updated_date" => $now,
+                    "ct_updated_by" => $userId
                 );
 
-                $result = DB::table("contomers")->where('contact_id', $conId)->update($data);
+                $result = DB::table("contacts")->where('id', $conId)->update($data);
             } else {
                 throw new Exception("Wrong mode");
             }

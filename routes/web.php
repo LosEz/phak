@@ -67,6 +67,8 @@ Route::group(['middleware' => ['haslogin']], function () {
 
     Route::prefix('contacts')->group(function () {
         Route::get('/', [ContactController::class, 'index']);
+        Route::get('/add', [ContactController::class, 'pageAdd']);
+        Route::get('/edit/{id}', [ContactController::class, 'pageEdit']);
         Route::post('/search', [ContactController::class, 'searchData']);
         Route::post('/addEdit', [ContactController::class, 'addEditData']);
     });
