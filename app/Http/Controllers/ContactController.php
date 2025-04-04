@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ContactImport;
 use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -23,6 +24,9 @@ class ContactController extends BaseController
     public function index()
     {
         Log::info('[' . __METHOD__ . ']');
+
+        //$contactAll = $this->readExcel();
+
         return view('contact');
     }
 
@@ -69,7 +73,7 @@ class ContactController extends BaseController
             $sql = "select
                         c.id as conId,
                         c.ct_contact_code as conCode,
-                        case when c.ct_bus_type = 'H' then c.ct_bus_name else concat(c.ct_addr_contact_name) end as conName,
+                        case when c.ct_bus_cate_type = 'N' then c.ct_bus_name else CONCAT(c.ct_title_name, ' ', c.ct_first_name, ' ', c.ct_last_name) end as conName,
                         case when c.ct_bus_cate_type = 'N' then 'นิติบุคคล' else 'บุคคลธรรมดา' end as contactType,
                         c.ct_contact_phone as conPhone,
                         case when c.ct_updated_date != null then DATE_FORMAT(c.ct_updated_date, '%d/%m/%Y') else DATE_FORMAT(c.ct_created_date , '%d/%m/%Y') end as lastDate,
@@ -174,6 +178,7 @@ class ContactController extends BaseController
                 $result = DB::table("contacts")->insertGetId($data);
             } else if ($type == "edit") {
                 $data = array(
+                    "contactType" => $contactType,
                     "ct_bus_type" => $busType,
                     "ct_bus_branch" => $busBranch,
                     "ct_bus_cate_type" => $busCateType,
@@ -218,4 +223,140 @@ class ContactController extends BaseController
             return response()->json(['message' => $ex->getMessage()], 500);
         }
     }
+
+    public function readExcel()
+    {
+        Log::info('[' . __METHOD__ . '] start ');
+        try {
+            $filepath = storage_path('app') . '/import/contactImport.xlsx';
+            $array = (new ContactImport)->toArray($filepath);
+            $data = $array[0];
+            $dataAll = array();
+
+            if(count($data) > 0) {
+
+                for ($i = 0; $i < count($data); $i++) {
+                    if ($i == 0) {
+
+                    } else {
+                        if($data[$i][0] != null) {
+                            array_push($dataAll, $data[$i]);
+                        }
+                    }
+                }
+            }
+
+            $contactAll = array();
+
+            for($i = 0; $i < count($dataAll); $i++) {
+                $nation = "";
+                if($dataAll[$i][1] == 'ไทย') {
+                    $nation = "T";
+                }
+
+                $busname = "";
+                $firstName = "";
+                $lastName = "";
+                $titleName = "";
+               
+                $busCateType = "";
+                if($dataAll[$i][4] == 'นิติบุคคล') {
+                    $busname = $dataAll[$i][7];
+                    $busCateType = "N";
+                } else {
+                    $titleName = $dataAll[$i][6];
+                    $firstName = $dataAll[$i][7];
+                    $lastName = $dataAll[$i][8];
+                    $busCateType = "B";
+                }
+
+                $busBranch = "";
+                $busType = "";
+                if($dataAll[$i][3] == '00000') {
+                    $busType = "H";
+                } else if($dataAll[$i][4] == 'ไม่ระบุ') {
+                    $busType = "N";
+                } else {
+                    $busType = "B";
+                    $busBranch = $dataAll[$i][3];
+                }
+              
+                $businessType = "0";
+                $individualType = "0";
+               if($busCateType == "N") {    
+                    if($dataAll[$i][5] == 'บริษัทจำกัด') {
+                        $businessType = "1";
+                    } else if($dataAll[$i][5] == 'บริษัทมหาชนจำกัด') {
+                        $businessType = "2";
+                    } else if($dataAll[$i][5] == 'ห้างหุ้นส่วนจำกัด') {
+                        $businessType = "3";
+                    } else if($dataAll[$i][5] == 'มูลนิธิ') {
+                        $businessType = "4";
+                    } else if($dataAll[$i][5] == 'สมาคม') {
+                        $businessType = "5";
+                    } else if($dataAll[$i][5] == 'กิจการร่วมค้า') {
+                        $businessType = "6";
+                    } else if($dataAll[$i][5] == 'อื่นๆ') {
+                        $businessType = "7";
+                    }
+               } else {
+                    if($dataAll[$i][5] == 'บุคคลธรรมดา') {
+                        $individualType = "1";
+                    } else if($dataAll[$i][5] == 'ห้างหุ้นส่วนสามัญ') {
+                        $individualType = "2";
+                    } else if($dataAll[$i][5] == 'ร้านค้า') {
+                        $individualType = "3";
+                    } else if($dataAll[$i][5] == 'คณะบุคคล') {
+                        $individualType = "4";
+                    }
+               }
+
+              
+                
+
+                $contact = array(
+                    "ct_contact_type" => "N",
+                    "ct_contact_code" => $dataAll[$i][0],
+                    "ct_nation" => $nation,
+                    "ct_bus_tax_id" => $dataAll[$i][2],
+                    "ct_bus_branch" => $busBranch,
+                    "ct_bus_type" => $busType,
+                    "ct_bus_cate_type" => $busCateType,
+                    "ct_bus_name" => $busname,
+                    "ct_title_name" => $titleName,
+                    "ct_first_name" => $firstName,
+                    "ct_last_name" => $lastName,
+                    "ct_addr_contact_name" => $dataAll[$i][9],
+                    "ct_addr_address" => $dataAll[$i][10],
+                    "ct_addr_sub_district" => $dataAll[$i][11],
+                    "ct_addr_district" => $dataAll[$i][12],
+                    "ct_addr_province" => $dataAll[$i][13],
+                    "ct_addr_postcode" => $dataAll[$i][15],
+                    "ct_contact_phone" => $dataAll[$i][16],
+                    "ct_contact_email" => $dataAll[$i][17],
+                    "ct_contact_website" => $dataAll[$i][18],
+                    "ct_contact_fax" => $dataAll[$i][19],
+                    "ct_bank_name" => $dataAll[$i][20],
+                    "ct_bank_account_name" => $dataAll[$i][21],
+                    "ct_bank_account_number" => $dataAll[$i][22],
+                    "ct_bank_branch" => $dataAll[$i][23],
+                    "ct_created_date" => Carbon::now()->setTimezone("Asia/Bangkok"),
+                    "ct_created_by" => Session::get('userId'),
+                    "ct_business_type" => $businessType,
+                    "ct_individual_type" => $individualType
+                );
+
+                $result = DB::table("contacts")->insertGetId($contact);
+
+                array_push($contactAll, $contact);
+            }
+
+            Log::info('[' . __METHOD__ . '] finish ');
+            return $contactAll;
+        } catch (Exception $ex) {
+            Log::error('[' . __METHOD__ . '][' . $ex->getFile() . '][line : ' . $ex->getLine() . '][' . $ex->getMessage() . ']');
+            return $ex->getMessage();
+        }
+    }
+
 }

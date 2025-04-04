@@ -60,7 +60,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <span>ประเภทผู้ติดต่อ</span>
-                        <select class="form-control" id="contactType" disabled>
+                        <select class="form-control" id="contactType">
                             <option value="">-- กรุณาเลือก --</option>
                             <option value="C" @if($contact->ct_contact_type == 'C') selected @endif>ลูกค้า</option>
                             <option value="S" @if($contact->ct_contact_type == 'S') selected @endif>ผู้ขาย</option>
@@ -510,6 +510,7 @@
     function saveData() {
         loadingShow();
         let contactId = $('#contactId').val();
+        let contactType = $('#contactType').val();
         let busType = $("input[type='radio'][name='busType']:checked").val();
         let busCateType = $("input[type='radio'][name='busCateType']:checked").val();
         let businessType = $('#businessType').val();
@@ -553,6 +554,7 @@
             url: '{{URL::to("contacts/addEdit")}}',
             data: {
                 contactId: contactId,
+                contactType: contactType,
                 busType: busType,
                 busCateType: busCateType,
                 busBranch: busBranch,
