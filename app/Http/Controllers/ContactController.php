@@ -32,17 +32,9 @@ class ContactController extends BaseController
 
     public function pageAdd()
     {
-        $nextCode = DB::select("select concat('C', LPAD(max( SUBSTR(c.ct_contact_code, 2, 5)) + 1,5,'0')) nextCode from contacts c");
-        
-        if(empty($nextCode)) {
-            $nextCode = "C00001";
-        } else {
-            $nextCode = $nextCode[0]->nextCode;
-        }
-        
         Log::info('[' . __METHOD__ . ']');
 
-        return view('contactAdd',["nextCode" => $nextCode]);
+        return view('contactAdd');
     }
 
     public function pageEdit($id = 0)
@@ -151,16 +143,6 @@ class ContactController extends BaseController
             $userId = Session::get('userId');
 
             if ($type == "add") {
-
-                $checkConCode = DB::select("SELECT * FROM contacts WHERE ct_contact_code = '$conCode'");
-                if (!empty($checkConCode)) {
-                    throw new Exception("Contact code already exists");
-                }
-                $checkTaxId = DB::select("SELECT * FROM contacts WHERE ct_bus_tax_id = '$taxId'");
-                if (!empty($checkTaxId)) {
-                    throw new Exception("Tax ID already exists");
-                }
-
                 $data = array(
                     "ct_nation" => $conNation,
                     "ct_contact_type" => $contactType,
