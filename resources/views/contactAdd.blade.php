@@ -45,6 +45,15 @@
         }
 </style>
 
+    @if($errors->any())
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+            {{$errors->first()}}
+        </div>
+    </div>
+    @endif
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -69,7 +78,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <span>รหัสผู้ติดต่อ</span>
-                        <input class="form-control" id="contactCode"/>
+                        <input class="form-control" id="contactCode" value="{{ $nextCode }}"/>
                     </div>
                 </div>
             </div>
@@ -485,17 +494,17 @@
         }
 
         if(taxId.length < 13) {
-            alert("กรุณากรอกเลขประจำตัวผู้เสียภาษีให้ครบ 13 หลัก");
+            alertError("กรุณากรอกเลขประจำตัวผู้เสียภาษีให้ครบ 13 หลัก");
             loadingHide();
             return;
         }
         if(contactType === '') {
-            alert("กรุณาเลือกประเภทผู้ติดต่อ");
+            alertError("กรุณาเลือกประเภทผู้ติดต่อ");
             loadingHide();
             return;
         }
         if(contactCode === '') {
-            alert("กรุณากรอกรหัสผู้ติดต่อ");
+            alertError("กรุณากรอกรหัสผู้ติดต่อ");
             loadingHide();
             return;
         }
@@ -576,7 +585,7 @@
                 window.location.href = "{{ url('contacts') }}";
             },
             error: function(result) {
-                console.log(result.responseText);
+                alertError(result.responseJSON.message);
                 loadingHide();
             }
         });
