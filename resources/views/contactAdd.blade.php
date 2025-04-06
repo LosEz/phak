@@ -485,17 +485,17 @@
         }
 
         if(taxId.length < 13) {
-            alert("กรุณากรอกเลขประจำตัวผู้เสียภาษีให้ครบ 13 หลัก");
+            alertError("กรุณากรอกเลขประจำตัวผู้เสียภาษีให้ครบ 13 หลัก");
             loadingHide();
             return;
         }
         if(contactType === '') {
-            alert("กรุณาเลือกประเภทผู้ติดต่อ");
+            alertError("กรุณาเลือกประเภทผู้ติดต่อ");
             loadingHide();
             return;
         }
         if(contactCode === '') {
-            alert("กรุณากรอกรหัสผู้ติดต่อ");
+            alertError("กรุณากรอกรหัสผู้ติดต่อ");
             loadingHide();
             return;
         }
@@ -576,7 +576,7 @@
                 window.location.href = "{{ url('contacts') }}";
             },
             error: function(result) {
-                console.log(result.responseText);
+                alertError(result.responseJSON.message);
                 loadingHide();
             }
         });
