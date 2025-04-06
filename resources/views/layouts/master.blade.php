@@ -204,6 +204,14 @@
         $.notify(msg, "error");
     }
 
+    function alertWarning(msg) {
+        $.notify(msg, "warning");
+    }
+
+    function alertInfo(msg) {
+        $.notify(msg, "info");
+    }
+
 
     $("#accordionSidebar>li").each(function() {
         var navItem = $(this);
