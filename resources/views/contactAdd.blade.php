@@ -69,7 +69,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <span>รหัสผู้ติดต่อ</span>
-                        <input class="form-control" id="contactCode"/>
+                        <input class="form-control" id="contactCode" value="{{ $nextCode }}"/>
                     </div>
                 </div>
             </div>
