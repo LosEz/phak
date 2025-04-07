@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use stdClass;
 
 class LoginController extends BaseController
 {
@@ -42,12 +43,14 @@ class LoginController extends BaseController
 
                 $users = DB::select("SELECT * FROM users where id = $result->user_id")[0];
 
-                $func = DB::select("select p.func_id, f.func_name, f.func_sub_menu, f. func_url , p.is_add, p.is_edit, p.is_delete, p.is_import, p.is_export from permissions p 
+                $func = DB::select("select p.func_id, f.func_name, f.func_sub_menu, f. func_url , p.is_add, p.is_edit
+                                            , p.is_delete, p.is_import, p.is_export  from permissions p 
                                 inner join func f on p.func_id = f.func_id
-                                WHERE p.is_view = true and p.role_id = $users->role_id");
+                                WHERE p.is_view = true and p.role_id = $users->role_id 
+                                Order by f.func_sub_menu, f.func_seq asc");
 
                 Session::put('func',$func);
-                return redirect('products');
+                return redirect('dashboard');
             } else {
                 return Redirect::back()->withErrors(['msg' => 'Login Fail']);
             }

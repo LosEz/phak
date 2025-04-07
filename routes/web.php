@@ -56,6 +56,9 @@ Route::post('/checkUser', [LoginController::class, 'loginWeb']);
 
 Route::group(['middleware' => ['haslogin']], function () {
 
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    });
     Route::get('/scaping', [TestScapingWebController::class, 'index']);
     Route::get('scapping/genData', [TestScapingWebController::class, 'genData']);
 

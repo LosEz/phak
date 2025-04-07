@@ -24,11 +24,9 @@ class ProductController extends BaseController
     public function index(){
         Log::info('['.__METHOD__.']');
 
-        $category = DB::select("SELECT cate_id as cateCode, cate_type as cateName FROM category");
-        $productGroup = DB::select("SELECT product_group_code as prodGroupCode, product_group_name as prodGroupName FROM product_group");
-        $unit = DB::select("SELECT unit_id as id, unit_type as unitType FROM unit_type");
+        $unit = DB::select("SELECT unit_id as id, unit_type as unitType, unit_type_en as unitTypeEn FROM unit_type");
 
-        return view('product', ['category' => $category,'productGroup'=> $productGroup, "unit" => $unit]);
+        return view('product', ["unit" => $unit]);
     }
 
 

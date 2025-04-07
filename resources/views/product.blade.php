@@ -107,78 +107,6 @@
             </div>
         </div>
     </div>
-
-</div>
-
-<div  id="addEditModal"  class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="title">Add Product</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <span>Product Code</span>
-                            <input class="form-control" id="proCode" />
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <span>Product Name</span>
-                            <input class="form-control" id="proName" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <span>Product Group</span>
-                            <select class="form-control" id="proGroupCode">
-                                    <option value="">Please select product group</option>
-                                @foreach($productGroup as $group)
-                                    <option value="{{ $group->prodGroupCode }}">{{ $group->prodGroupName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <span>Category</span>
-                            <select class="form-control" id="productCate">
-                                <option value="">Please select category</option>
-                                @foreach($category as $cate)
-                                <option value="{{ $cate->cateCode }}">{{ $cate->cateName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <span>Unit Type</span>
-                            <select class="form-control" id="productUnit">
-                                <option value="">Please select unit</option>
-                                @foreach($unit as $u)
-                                <option value="{{ $u->id }}">{{ $u->unitType }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="addBtn" type="submit" class="btn btn-success" onclick="saveData('add')">Submit</button>
-                <button id="editBtn" type="submit" class="btn btn-success hide" onclick="saveData('edit')">Submit</button>
-                <button type="submit" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
 </div>
 
     <script>
@@ -205,7 +133,7 @@
         $.ajax(
             {
                 type: "POST",
-                url: '{{URL::to("product/search")}}',
+                url: '{{URL::to("products/search")}}',
                 data:
                 {
                     proCodeSearch : proCodeSearch,
@@ -251,87 +179,11 @@
 
                 },
                 error: function (result) {
-                    console.log(result)
+                    alertError(result.responseJSON.message);
                     loadingHide();
                 }
             });
     }
-
-    function addModal() {
-
-        $('#title').html("Add Product");
-        $('#proCode').val("").prop('disabled', false);
-        $('#proName').val("");
-        $('#proGroupCode').val("");
-        $('#productCate').val("");
-        $('#productUnit').val("");
-        $('#addBtn').removeClass('hide');
-        $('#editBtn').addClass('hide');
-        $('#addEditModal').modal();
-
-    }
-
-    function editModal(id , checkDisabled) {
-            let data = items[id];
-            $('#title').html("Edit Product : " + data['proName']);
-            $('#proCode').val(data['proCode']).prop('disabled',true);
-            $('#proName').val(data['proName']);
-            $('#proGroupCode').val(data['proGroupCode']);
-            $('#productCate').val(data['cateId']);
-            $('#productUnit').val(data['unitId']);
-            $('#editBtn').removeClass('hide');
-            $('#addBtn').addClass('hide');
-
-            actionDisabled(checkDisabled);
-
-            $('#addEditModal').modal();
-        }
-
-    function actionDisabled(checkDisabled) {
-            $('#proName').prop('disabled',checkDisabled);
-            $('#proGroupCode').prop('disabled',checkDisabled);
-            $('#productCate').prop('disabled',checkDisabled);
-            $('#productUnit').prop('disabled',checkDisabled);
-
-            if(checkDisabled) {
-                $('#editBtn').addClass('hide');
-            }
-    }
-
-    function saveData(type) {
-        loadingShow();
-        let proCode = $('#proCode').val();
-        let proName = $('#proName').val();
-        let proGroupCode = $('#proGroupCode').val();
-        let proCate = $('#productCate').val();
-        let proUnit = $('#productUnit').val();
-
-        $.ajax(
-            {
-                type: "POST",
-                url: '{{URL::to("product/addEdit")}}',
-                data:
-                {
-                    proCode: proCode,
-                    proName: proName,
-                    proGroupCode: proGroupCode,
-                    proCate: proCate,
-                    proUnit: proUnit,
-                    type: type,
-                    _token: '{!! csrf_token() !!}'
-                },
-                success: function (result) {
-                    $("#addEditModal").modal('hide');
-                    searchProduct();
-
-                },
-                error: function (result) {
-                    console.log(result.responseText);
-                    loadingHide();
-                }
-            });
-    }
-
 </script>
 
 @endsection
