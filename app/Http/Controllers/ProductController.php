@@ -24,9 +24,10 @@ class ProductController extends BaseController
     public function index(){
         Log::info('['.__METHOD__.']');
 
-        $unit = DB::select("SELECT unit_id as id, unit_type as unitType, unit_type_en as unitTypeEn FROM unit_type");
+        $category = DB::select("SELECT cate_id as cateCode, cate_type as cateName FROM category");
+         $unit = DB::select("SELECT unit_id as id, unit_type as unitType FROM unit_type");
 
-        return view('product', ["unit" => $unit]);
+        return view('product', ['category' => $category, "unit" => $unit]);
     }
 
 
@@ -63,13 +64,11 @@ class ProductController extends BaseController
                         pg.product_group_name as proGroupName,
                         cate.cate_type as cateType,
                         ut.unit_type as unitType,
-                        p.product_group_code as proGroupCode,
                         p.unit_id as unitId,
                         p.cate_id as cateId
 
                     FROM
                         products p
-                        INNER JOIN product_group pg ON p.product_group_code = pg.product_group_code
                         INNER JOIN category cate ON p.cate_id = cate.cate_id
                         INNER JOIN unit_type ut ON p.unit_id = ut.unit_id";
 
@@ -79,10 +78,6 @@ class ProductController extends BaseController
 
             if($proName != null || $proName != "") {
                 $sql .= " AND p.product_name like '%$proName%'";
-            }
-
-            if ($proGroupCode != null || $proGroupCode != "") {
-                $sql .= " AND p.product_group_code = '$proGroupCode'";
             }
 
             if ($cateId != null || $cateId != "") {
@@ -124,7 +119,6 @@ class ProductController extends BaseController
                     $data = array(
                         "product_code" => $proCode,
                         "product_name" => $proName,
-                        "product_group_code" => $proGroupCode,
                         "cate_id"=> $cateId,
                         "unit_id"=> $unitId,
                         "create_date" => $now,
@@ -135,7 +129,6 @@ class ProductController extends BaseController
                 } else if($type == "edit"){
                     $data = array(
                         "product_name" => $proName,
-                        "product_group_code" => $proGroupCode,
                         "cate_id"=> $cateId,
                         "unit_id"=> $unitId,
                         "update_date" => $now,
