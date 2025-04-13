@@ -10,49 +10,36 @@
 
         <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <span>Product Code</span>
                             <input class="form-control" id="proCodeSearch" />
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <span>Product Name</span>
                             <input class="form-control" id="proNameSearch" />
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
-                            <span>Product Group</span>
-                            <select class="form-control" id="prodGroupSearch">
-                                <option value="">All</option>
-                                @foreach($productGroup as $group)
-                                <option value="{{ $group->prodGroupCode }}">{{ $group->prodGroupName }}</option>
+                            <span>Unit type</span>
+                            <select class="form-control" id="productGroupSearch">
+                                   <option value="">All</option>
+                                @foreach($productGroup as $p)
+                                <option value="{{ $p->pg_id }}">{{ $p->pg_name}}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <span>Category</span>
-                            <select class="form-control" id="cateSearch">
-                                <option value="">All</option>
-                                @foreach($category as $cate)
-                                <option value="{{ $cate->cateCode }}">{{ $cate->cateName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <span>Unit type</span>
                             <select class="form-control" id="unitSearch">
                                    <option value="">All</option>
                                 @foreach($unit as $u)
-                                <option value="{{ $u->id }}">{{ $u->unitType }}</option>
+                                <option value="{{ $u->unit_id }}">{{ $u->unit_type }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -81,7 +68,7 @@
                     <h3>Product List</h3>
                 </div>
                 <div class="col-sm-6" style="text-align: right;">
-                    <button class="btn btn-info" onclick="addModal()">Add</button>
+                    <button class="btn btn-info" onclick="window.location.href='{{ url('products/add')}}'">Add</button>
                 </div>
             </div>
            
@@ -94,7 +81,6 @@
                             <th>Product Code</th>
                             <th>Product Name</th>
                             <th>Product Gtoup</th>
-                            <th>Catgory</th>
                             <th>Unit Type</th>
                             <th>Action</th>
                         </tr>
@@ -156,12 +142,10 @@
                             (i + 1),
                             tempResp['proCode'],
                             tempResp['proName'],
-                            tempResp['proGroupName'],
-                            tempResp['cateType'],
+                            tempResp['pgName'],
                             tempResp['unitType'],
                             `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" onclick="editModal('${ i }', true)"><i class="fas fa-info"></i></button>
-                                <button type="button" class="btn btn-warning btn-circle" onclick="editModal('${ i }', false)"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-warning btn-circle" onclick="window.location.href='{{ url('products') }}/edit/${tempResp['pId']}'"><i class="fas fa-edit"></i></button>
                             </td>`
 
                         ]).draw().node();

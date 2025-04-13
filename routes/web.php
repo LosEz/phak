@@ -66,6 +66,9 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/search', [ProductController::class, 'searchData']);
         Route::post('/addEdit', [ProductController::class, 'addEditData']);
+        Route::get('/add', [ProductController::class, 'pageAdd']);
+        Route::get('/edit/{id}', [ProductController::class, 'pageEdit']);
+        Route::post('/genCode', [ProductController::class, 'generateCode']);
     });
 
     Route::prefix('contacts')->group(function () {
