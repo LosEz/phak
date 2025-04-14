@@ -48,7 +48,7 @@
                                 <tbody>
                                     @foreach($permissions as $key => $p)
                                         <tr class="text-center" >
-                                           <td>{{ $key + 1}} <input class="hide" name="perId" value="{{$p->id}}"/></td>
+                                           <td>{{ $key + 1}}</td>
                                            <td class="text-left">{{ $p->funcName }} <input class="hide" name="funcId" value="{{$p->func_id}}"/></td> 
                                            <td><input type="checkbox" name="per_view" {{ $p->is_view == 1 ? "checked" : ""}}/></td> 
                                            <td><input type="checkbox" name="per_add" {{ $p->is_add == 1 ? "checked" : ""}}/></td> 
@@ -112,12 +112,6 @@
             return "";
         }
 
-        var perId = []
-        var checkboxes = document.querySelectorAll('input[name="perId"]')
-        for (var i = 0; i < checkboxes.length; i++) {
-            perId.push(checkboxes[i].value);
-        }
-
         var funcId = []
         var checkboxes = document.querySelectorAll('input[name="funcId"]')
         for (var i = 0; i < checkboxes.length; i++) {
@@ -169,7 +163,6 @@
                     roleId:roleId,
                     roleName: roleName,
                     roleStatus: roleStatus,
-                    perId: perId,
                     funcId:funcId,
                     perView: perView,
                     perAdd: perAdd,

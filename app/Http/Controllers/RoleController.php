@@ -41,8 +41,16 @@ class RoleController extends BaseController
         Log::info('[' . __METHOD__ . ']');
 
         $roles = DB::select("SELECT * FROM roles WHERE role_id = $id");
-        $permission = DB::select("SELECT p.*, f.func_name as funcName FROM permissions p
-        inner join func f on p.func_id = f.func_id WHERE p.role_id = $id AND f.func_sub_menu != 0 order by id asc");
+        $permission = DB::select("Select f.func_name as funcName, f.func_id, 
+                                            IF( p.is_view is not null, p.is_view, 0) as is_view ,
+                                            IF( p.is_add is not null, p.is_add, 0) as is_add ,
+                                            IF( p.is_edit is not null, p.is_edit, 0) as is_edit ,
+                                            IF( p.is_delete is not null, p.is_delete, 0) as is_delete ,
+                                            IF( p.is_import is not null, p.is_import, 0) as is_import ,
+                                            IF( p.is_export is not null, p.is_export, 0) as is_export
+                                         from func f 
+                                            left join permissions p on f.func_id = p.func_id and p.role_id = $id
+                                            where f.func_sub_menu != 0 order by func_id asc");
         if(empty($roles)) {
             return view('404');
         }
@@ -146,7 +154,6 @@ class RoleController extends BaseController
             $roleId = $request->input('roleId');
             $roleName = $request->input('roleName');
             $roleStatus = $request->input('roleStatus');
-            $perId = $request->input('perId');
             $funcId = $request->input('funcId');
             $perView = $request->input('perView');
             $perAdd = $request->input('perAdd');
@@ -168,17 +175,34 @@ class RoleController extends BaseController
             $roleId = DB::table('roles')->where('role_id',"=",$roleId)->update( $roleArr );
 
 
-            for($i = 0; $i < count($perId); $i++) {
 
-                $data = array(
-                            "is_view" => $perView[$i] === 'true' ? true : false,
-                            "is_add" => $perAdd[$i] === 'true' ? true : false,
-                            "is_edit" => $perEdit[$i] === 'true' ? true : false,
-                            "is_delete" => $perDelete[$i] === 'true' ? true : false,
-                            "is_import" => $perImport[$i] === 'true' ? true : false,
-                            "is_export" => $perExport[$i] === 'true' ? true : false);
+            for($i = 0; $i < count($funcId); $i++) {
 
-                DB::table('permissions')->where('id',"=", $perId[$i])->update($data);
+                $check = DB::select("SELECT * FROM permissions WHERE role_id = $roleId AND func_id = $funcId[$i]");
+                if(empty($check)) {
+                    $data = array("role_id" => $roleId,
+                                "func_id" => $funcId[$i],
+                                "is_view" => $perView[$i] === 'true' ? true : false,
+                                "is_add" => $perAdd[$i] === 'true' ? true : false,
+                                "is_edit" => $perEdit[$i] === 'true' ? true : false,
+                                "is_delete" => $perDelete[$i] === 'true' ? true : false,
+                                "is_import" => $perImport[$i] === 'true' ? true : false,
+                                "is_export" => $perExport[$i] === 'true' ? true : false);
+
+                    DB::table('permissions')->insertGetId($data);
+                } else {
+                    $data = array(
+                        "is_view" => $perView[$i] === 'true' ? true : false,
+                        "is_add" => $perAdd[$i] === 'true' ? true : false,
+                        "is_edit" => $perEdit[$i] === 'true' ? true : false,
+                        "is_delete" => $perDelete[$i] === 'true' ? true : false,
+                        "is_import" => $perImport[$i] === 'true' ? true : false,
+                        "is_export" => $perExport[$i] === 'true' ? true : false);
+
+                    DB::table('permissions')
+                    ->where('role_id',"=",$roleId)
+                    ->where('func_id',"=", $funcId[$i])->update($data);
+                }
             }
 
             $act = new ActivityLogController();
