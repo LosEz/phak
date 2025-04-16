@@ -47,7 +47,7 @@ class LoginController extends BaseController
                                             , p.is_delete, p.is_import, p.is_export  from permissions p 
                                 inner join func f on p.func_id = f.func_id
                                 WHERE p.is_view = true and p.role_id = $users->role_id 
-                                Order by f.func_sub_menu, f.func_seq asc");
+                                Order by f.func_id, f.func_seq asc");
 
                 Session::put('func',$func);
                 return redirect('dashboard');

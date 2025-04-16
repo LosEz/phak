@@ -99,4 +99,15 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::get('/edit/{id}', [UsersController::class, 'pageEdit']);
         Route::post('/save', [UsersController::class, 'addEditData']);
     });
+
+    Route::prefix('cashs')->group(function () {
+        Route::get('/', [FinanceCashController::class, 'index']);
+        Route::get('/list', [FinanceCashController::class, 'list']);
+        Route::get('/add', [FinanceCashController::class, 'pageAdd']);
+        Route::get('/edit/{id}', [FinanceCashController::class, 'pageEdit']);
+        Route::post('/cashsave', [FinanceCashController::class, 'cashSave']);
+        Route::post('/banksave', [FinanceCashController::class, 'bankSave']);
+        Route::post('/ewalletsave', [FinanceCashController::class, 'eWalletsave']);
+        Route::post('/expenseclaimsave', [FinanceCashController::class, 'expenseClaimSave']);
+    });
 });

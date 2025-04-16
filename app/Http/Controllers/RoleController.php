@@ -31,7 +31,7 @@ class RoleController extends BaseController
     {
         Log::info('[' . __METHOD__ . ']');
 
-        $func = DB::select("SELECT * FROM func where func_sub_menu != 0");
+        $func = DB::select("SELECT * FROM func");
 
         return view('roleAdd', ['func' => $func]);
     }
@@ -50,7 +50,7 @@ class RoleController extends BaseController
                                             IF( p.is_export is not null, p.is_export, 0) as is_export
                                          from func f 
                                             left join permissions p on f.func_id = p.func_id and p.role_id = $id
-                                            where f.func_sub_menu != 0 order by func_id asc");
+                                            order by func_id asc");
         if(empty($roles)) {
             return view('404');
         }
