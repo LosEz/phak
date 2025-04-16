@@ -12,13 +12,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>Supplier Code</span>
-                            <input class="form-control" id="suppCode" />
+                            <input class="form-control" id="suppCode" value="{{$supp->suppCode}}" disabled/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>Supplier Name</span>
-                            <input class="form-control" id="suppName" />
+                            <input class="form-control" id="suppName" value="{{$supp->suppName}}" disabled/>
                         </div>
                     </div>
                 </div>
@@ -27,13 +27,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>ชื่อ</span>
-                            <input class="form-control" id="firstname" />
+                            <input class="form-control" id="firstname" value="{{$supp->firstname}}"/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>นามสกุล</span>
-                            <input class="form-control" id="lastname" />
+                            <input class="form-control" id="lastname" value="{{$supp->lastname}}"/>
                         </div>
                     </div>
                 </div>
@@ -42,15 +42,18 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>แหล่งผลิต</span>
-                            <input class="form-control" id="firstname" />
+                            <input class="form-control" id="sourceProduct" value="{{$supp->sourceProduct}}"/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <span>มาตรฐาน GAP</span>
-                            <input class="form-control" type="radio" name="gapType[]" />
-                            <input class="form-control" type="radio" name="gapType[]" />
-                            <input class="form-control" type="radio" name="gapType[]" />
+                            <span>มาตรฐาน GAP</span><br/>
+                            <input type="radio" name="fav_language" value="C" @if($supp->gapType == "C") checked @endif>
+                            <label for="gapComplete">ได้รับ</label><br>
+                            <input type="radio" name="fav_language" value="P" @if($supp->gapType == "P") checked @endif>
+                            <label for="gapProcess">กำลังดำเนินการ</label><br>
+                            <input type="radio" name="fav_language" value="U" @if($supp->gapType == "U") checked @endif>
+                            <label for="gapUncomplete">ยังไม่ได้รับ</label>
                         </div>
                     </div>
                 </div>
@@ -59,13 +62,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>GAP Approve Date</span>
-                            <input class="form-control" type="date" id="gapDate" />
+                            <input class="form-control" type="date" id="gapAppDate" value="{{$supp->gapAppDate}}"/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>GAP Expire Date</span>
-                            <input class="form-control" type="date" id="gapExpireDate" />
+                            <input class="form-control" type="date" id="gapExpireDate" value="{{$supp->gapExpireDate}}"/>
                         </div>
                     </div>
                 </div>
@@ -74,13 +77,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>ระบุปุ๋ย/สารเคมีที่ใช้</span>
-                            <textarea class="form-control" id="chemicals"></textarea>
+                            <textarea class="form-control" id="chemicals">{{$supp->chemicals}}</textarea>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>ขนาดแปลง</span>
-                            <textarea class="form-control" id="vetPlot"></textarea>
+                            <textarea class="form-control" id="vetPlot">{{$supp->vetPlot}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -89,13 +92,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>ที่มาของดินที่ใช้</span>
-                            <textarea class="form-control" id="earthHistory"></textarea>
+                            <textarea class="form-control" id="earthHistory">{{$supp->earthHistory}}</textarea>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <span>ที่มาของดิน</span>
-                            <textarea class="form-control" id="originalSoil"></textarea>
+                            <textarea class="form-control" id="originalSoil">{{$supp->originalSoil}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -105,7 +108,7 @@
 
                     </div>
                     <div class="col-sm-8">
-                        <button type="button" class="form-control btn btn-primary" onclick="searchSupplier()">Search</button>
+                        <button type="button" class="form-control btn btn-primary" onclick="save()">Save</button>
                     </div>
                     <div class="col-sm-2">
                     
@@ -117,60 +120,44 @@
 </div>
 
     <script>
-    var tablelist;
-    var items = [];
      function save() {
         loadingShow();
         let suppCode = $('#suppCode').val();
         let suppName = $('#suppName').val();
-        let firstname = $('$firstname').val();
+        let firstname = $('#firstname').val();
         let lastname = $('#lastname').val();
-        let 
-
+        let sourceProduct = $('#sourceProduct').val();
+        let gapAppDate = $('#gapAppDate').val();
+        let gapExpireDate = $('#gapExpireDate').val();
+        let chemicals = $('#chemicals').val();
+        let vetPlot = $('#vetPlot').val();
+        let earthHistory = $('#earthHistory').val();
+        let originalSoil = $('#originalSoil').val();
+        let gapType = $("input:radio[name=fav_language]:checked").val();
+        
         $.ajax(
             {
                 type: "POST",
                 url: '{{URL::to("supplier/save")}}',
                 data:
                 {
-                    suppCodeSearch : suppCodeSearch,
-                    suppNameSearch : suppNameSearch,
+                    suppCode : suppCode,
+                    suppName : suppName,
+                    firstname : firstname,
+                    lastname : lastname,
+                    sourceProduct : sourceProduct,
+                    gapType : gapType,
+                    gapAppDate : gapAppDate,
+                    gapExpireDate : gapExpireDate,
+                    chemicals : chemicals,
+                    vetPlot : vetPlot,
+                    earthHistory : earthHistory,
+                    originalSoil : originalSoil,
+                    type : "edit",
                     _token: '{!! csrf_token() !!}'
                 },
                 success: function (result) {
-                    tablelist.clear().draw();
-                    items = [];
-                if (result['suppliers'].length > 0) {
-                    let data = result['suppliers'];
-                    items = data;
-
-                    for (var i = 0; i < data.length; i++) {
-                        tempResp = result['suppliers'][i];
-                        var rowNode = tablelist.row.add([
-                            (i + 1),
-                            tempResp['suppCode'],
-                            tempResp['suppName'],
-                            tempResp['fullname'],
-                            tempResp['gapDate'],
-                            tempResp['gapExpireDate'],
-                            `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" href="{{ url('supplier') }}/view/${  tempResp['suppCode'] })"><i class="fas fa-info"></i></button>
-                                <button type="button" class="btn btn-warning btn-circle" href="{{ url('supplier') }}/edit/${  tempResp['suppCode'] })")"><i class="fas fa-edit"></i></button>
-                            </td>`
-
-                        ]).draw().node();
-
-                        $(rowNode).find('td').eq(0).addClass('text-center');
-                        $(rowNode).find('td').eq(1).addClass('text-center');
-                        $(rowNode).find('td').eq(2).addClass('text-left');
-                        $(rowNode).find('td').eq(3).addClass('text-right');
-                        $(rowNode).find('td').eq(4).addClass('text-center');
-                        $(rowNode).find('td').eq(5).addClass('text-center');
-                        $(rowNode).find('td').eq(6).addClass('text-center');
-                    }
-                } 
-                loadingHide();
-
+                    window.location.href = "{{ url('supplier') }}";
                 },
                 error: function (result) {
                     console.log(result)

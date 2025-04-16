@@ -8,6 +8,7 @@ use App\Http\Controllers\TestScapingWebController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CreatePdfController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FinanceCashController;
 use App\Http\Controllers\OrderBuyController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\RoleController;

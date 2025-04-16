@@ -57,6 +57,8 @@
                             <th>No.</th>
                             <th>Supplier Code</th>
                             <th>Supplier Name</th>
+                            <th>GAP Approve Date</th>
+                            <th>GAP Expire Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -112,12 +114,12 @@
                             (i + 1),
                             tempResp['suppCode'],
                             tempResp['suppName'],
-                            tempResp['fullname'],
-                            tempResp['gapDate'],
+                            tempResp['gapAppDate'],
                             tempResp['gapExpireDate'],
                             `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" href="{{ url('supplier') }}/view/${  tempResp['suppCode'] })"><i class="fas fa-info"></i></button>
-                                <button type="button" class="btn btn-warning btn-circle" href="{{ url('supplier') }}/edit/${  tempResp['suppCode'] })")"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-warning btn-circle" 
+                                onclick="location.href='{{ url('supplier') }}/edit/${ tempResp['suppCode'] }'">
+                                <i class="fas fa-edit"></i></button>
                             </td>`
 
                         ]).draw().node();
@@ -125,10 +127,9 @@
                         $(rowNode).find('td').eq(0).addClass('text-center');
                         $(rowNode).find('td').eq(1).addClass('text-center');
                         $(rowNode).find('td').eq(2).addClass('text-left');
-                        $(rowNode).find('td').eq(3).addClass('text-right');
+                        $(rowNode).find('td').eq(3).addClass('text-center');
                         $(rowNode).find('td').eq(4).addClass('text-center');
                         $(rowNode).find('td').eq(5).addClass('text-center');
-                        $(rowNode).find('td').eq(6).addClass('text-center');
                     }
                 } 
                 loadingHide();

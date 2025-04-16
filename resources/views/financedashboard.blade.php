@@ -1,31 +1,41 @@
 @extends('layouts.master')
 
 @section('content')
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Buy Order</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Contacts</h6>
         </div>
 
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <div class="form-group">
-                        <span>Order ID</span>
-                        <input class="form-control" id="orderIdSearch" />
+                        <span>Contact Code</span>
+                        <input class="form-control" id="conCodeSearch" />
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <div class="form-group">
-                        <span>Create Date From</span>
-                        <input type="date" id="fromDate" class="form-control">
+                        <span>Contact Name</span>
+                        <input class="form-control" id="conNameSearch" />
                     </div>
                 </div>
-                <div class="col-sm-4">
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-6">
                     <div class="form-group">
-                        <span>Create Date To</span>
-                        <input type="date" id="toDate" class="form-control">
+                        <span>Contact Tax Id</span>
+                        <input class="form-control" id="conTaxIdSearch" />
                     </div>
+                </div>
+                <div class="col-sm-6">
+                    {{-- <div class="form-group">
+                        <span>Contact Name</span>
+                        <input class="form-control" id="cusNameSearch" />
+                    </div> --}}
                 </div>
             </div>
             <br />
@@ -34,7 +44,7 @@
 
                 </div>
                 <div class="col-sm-8">
-                    <button type="button" class="form-control btn btn-primary" onclick="searchOrder()">Search</button>
+                    <button type="button" class="form-control btn btn-primary" onclick="searchContacts()">Search</button>
                 </div>
                 <div class="col-sm-2">
 
@@ -48,10 +58,10 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>Buy Order List</h3>
+                    <h3>Contacts List</h3>
                 </div>
                 <div class="col-sm-6" style="text-align: right;">
-                    <a class="btn btn-info" href="{{ url('buyOrder') }}/add">Add</a>
+                    <button class="btn btn-info" onclick="window.location.href='{{ url('contacts') }}/add'">Add</button>
                 </div>
             </div>
 
@@ -61,9 +71,10 @@
                     <thead>
                         <tr class="text-center">
                             <th>No.</th>
-                            <th>Order ID</th>
-                            <th>Create Date</th>
-                            <th>Delivery Date</th>
+                            <th>Contact Code</th>
+                            <th>Contact Name</th>
+                            <th>Contact Type</th>
+                            <th>Contact Phone</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -91,72 +102,59 @@
         });
     });
 
-    function searchOrder() {
+    function searchContacts() {
         loadingShow();
-        let orderIdSearch = $('#orderIdSearch').val();
-        let fromDate = $('#fromDate').val();
-        let toDate = $('#toDate').val();
+        let conCodeSearch = $('#conCodeSearch').val();
+        let conNameSearch = $('#conNameSearch').val();
+        let conTaxIdSearch = $('#conTaxIdSearch').val();
 
         $.ajax({
             type: "POST",
-            url: '{{URL::to("buyOrder/search")}}',
+            url: '{{URL::to("contacts/search")}}',
             data: {
-                orderIdSearch: orderIdSearch,
-                fromDate: fromDate,
-                toDate: toDate,
+                conCodeSearch: conCodeSearch,
+                conNameSearch: conNameSearch,
+                conTaxIdSearch: conTaxIdSearch,
                 _token: '{!! csrf_token() !!}'
             },
             success: function(result) {
                 tablelist.clear().draw();
                 items = [];
-                if (result['orderBuy'].length > 0) {
-                    let data = result['orderBuy'];
+                if (result['contacts'].length > 0) {
+                    let data = result['contacts'];
                     items = data;
 
                     for (var i = 0; i < data.length; i++) {
-                        tempResp = result['orderBuy'][i];
-
-                        let deliDate = "";
-
-                        if( tempResp['deliveryDate'] == "") {
-                            `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" target="_blank" onclick='window.location.href="{{ url("orderBuy") }}/view/${tempResp['orderId']}'><i class="fas fa-info"></i></button>
-                                <button type="button" class="btn btn-warning btn-circle" target="_blank" onclick='window.location.href="{{ url("orderBuy") }}/edit/${tempResp['orderId']}'><i class="fas fa-edit"></i></button>
-                            </td>`
-                        } else {
-                            deliDate = tempResp['deliveryDate'];
-                        }
-
+                        tempResp = result['contacts'][i];
                         var rowNode = tablelist.row.add([
                             (i + 1),
-                            tempResp['orderId'],
-                            tempResp['createDate'],
-                            deliDate,
+                            tempResp['conCode'],
+                            tempResp['conName'],
+                            tempResp['contactType'],
+                            tempResp['conPhone'],
                             `<td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle" target="_blank" onclick='window.location.href="{{ url("orderBuy") }}/view/${tempResp['orderId']}'><i class="fas fa-info"></i></button>
-                                <button type="button" class="btn btn-warning btn-circle" target="_blank" onclick='window.location.href="{{ url("orderBuy") }}/edit/${tempResp['orderId']}'><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-danger btn-circle" onclick="window.location.href='{{ url('contacts') }}/edit/${tempResp['conId']}'"><i class="fas fa-edit"></i></button>
                             </td>`
 
                         ]).draw().node();
 
                         $(rowNode).find('td').eq(0).addClass('text-center');
                         $(rowNode).find('td').eq(1).addClass('text-center');
-                        $(rowNode).find('td').eq(2).addClass('text-center');
+                        $(rowNode).find('td').eq(2).addClass('text-left');
                         $(rowNode).find('td').eq(3).addClass('text-center');
                         $(rowNode).find('td').eq(4).addClass('text-center');
+                        $(rowNode).find('td').eq(5).addClass('text-center');
                     }
                 }
-                alertSuccess(result.message);
                 loadingHide();
 
             },
             error: function(result) {
-                alertError(result.responseJSON.message);
+                console.log(result)
                 loadingHide();
             }
         });
     }
-
 </script>
 
 @endsection
