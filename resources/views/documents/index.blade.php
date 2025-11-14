@@ -279,6 +279,7 @@ body, html {height: 100%}
             <tr>
                 <th>Title</th>
                 <th>File Name</th>
+                <th>Type</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -292,6 +293,17 @@ body, html {height: 100%}
                     <span style="color: var(--dark-gray);">
                         <i class="far fa-file-pdf text-danger"></i> {{ $document->original_name }}
                     </span>
+                <td>
+                    <strong>
+                        @if ($document->type_by == 'P')
+                            Phak
+                        @elseif ($document->type_by == 'D')
+                            Dessert
+                        @else
+                            {{ $document->type_by }}
+                        @endif
+                    </strong>
+                </td>
                 </td>
                 <td>
                     <div class="action-group">

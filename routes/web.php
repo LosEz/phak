@@ -15,6 +15,7 @@ use App\Http\Controllers\OrderBuyController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UpdatePriceController;
+use App\Http\Controllers\UpdatePriceDessertController;
 use App\Http\Controllers\UsersController;
 
 /*
@@ -63,6 +64,7 @@ Route::post('/checkUser', [LoginController::class, 'loginWeb']);
 
 
 Route::get('/updateprice', [UpdatePriceController::class, 'show']);
+Route::get('/updatepricedessert', [UpdatePriceDessertController::class, 'show']);
 
 //Route::get('/notification', [DiscordNotificationController::class, 'sendNotification']);
 
