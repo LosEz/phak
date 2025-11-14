@@ -39,6 +39,12 @@ var myBarChart = new Chart(ctx, {
       hoverBackgroundColor: "#2e59d9",
       borderColor: "#4e73df",
       data: [4215, 5312, 6251, 7841, 9821, 14984],
+    },{
+      label: "Test",
+      backgroundColor: "#fc1919",
+      hoverBackgroundColor: "#fc1919",
+      borderColor: "#fc1919",
+      data: [4000, 2000, 7000, 5000, 6000, 10000],
     }],
   },
   options: {
