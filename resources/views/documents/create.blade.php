@@ -161,6 +161,14 @@ h1 {
         </div>
 
         <div class="form-group">
+            <label for="typeBy" class="file-input-label">Type By</label>
+             <select name="typeBy" id="typeBy" class="form-control">
+                <option value="P">Phak</option>
+                <option value="D">Desert</option>
+              </select>
+        </div>
+
+        <div class="form-group">
             <label class="file-input-label">Actions</label>
             <div class="d-flex gap-2">
                 <button type="button" onclick="window.print()" class="btn btn-outline-secondary">

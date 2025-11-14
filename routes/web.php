@@ -61,8 +61,7 @@ Route::get('/pdf', [CreatePdfController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/checkUser', [LoginController::class, 'loginWeb']);
 
-Route::get('documents/{document}', [DocumentController::class, 'show'])
-     ->name('documents.show');
+
 Route::get('/updateprice', [UpdatePriceController::class, 'show']);
 
 //Route::get('/notification', [DiscordNotificationController::class, 'sendNotification']);
@@ -132,5 +131,8 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::get('/ew/edit/{id}', [FinanceCashController::class, 'pageEwEdit']);
     });
 
-    Route::resource('documents', DocumentController::class)->except(['show']);
+    Route::resource('documents', DocumentController::class);
 });
+
+Route::get('documents/{document}', [DocumentController::class, 'show'])
+     ->name('documents.show');

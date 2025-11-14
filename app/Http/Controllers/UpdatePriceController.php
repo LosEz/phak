@@ -11,7 +11,7 @@ class UpdatePriceController extends Controller
 {
     public function show()
     {
-        $latestFile = Document::latest()->first();
+        $latestFile = Document::latest()->where('type_by', '=','P')->first();
 
         // 2. กรณีไม่พบไฟล์เลย
         if (!$latestFile) {

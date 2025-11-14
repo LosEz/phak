@@ -13,6 +13,7 @@ class Document extends Model
         'id',
         'title',
         'file_path',
-        'original_name'
+        'original_name',
+        'type_by'
     ];
 }

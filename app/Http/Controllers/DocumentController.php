@@ -34,7 +34,8 @@ class DocumentController extends Controller
             Document::create([
                 'title' => $request->title,
                 'file_path' => $filePath,
-                'original_name' => $file->getClientOriginalName()
+                'original_name' => $file->getClientOriginalName(),
+                'type_by' => $request->typeBy
             ]);
 
             return redirect()->route('documents.index')
