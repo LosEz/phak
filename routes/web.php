@@ -8,11 +8,13 @@ use App\Http\Controllers\TestScapingWebController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CreatePdfController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DiscordNotificationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FinanceCashController;
 use App\Http\Controllers\OrderBuyController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UpdatePriceController;
 use App\Http\Controllers\UsersController;
 
 /*
@@ -34,8 +36,6 @@ Route::get('/scapping', function () {
     return view('scapping');
 });
 
-Route::resource('documents', DocumentController::class);
-
 Route::get('/table', function () {
     return view('table');
 });
@@ -48,6 +48,10 @@ Route::get('/stock', function () {
     return view('stock');
 });
 
+Route::get('/404', function () {
+    return view('404');
+});
+
 Route::get('/logout', function () {
     \Session::flush();
     return redirect('/login');
@@ -57,11 +61,19 @@ Route::get('/pdf', [CreatePdfController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/checkUser', [LoginController::class, 'loginWeb']);
 
+
+Route::get('/updateprice', [UpdatePriceController::class, 'show']);
+
 Route::group(['middleware' => ['haslogin']], function () {
+
+    // Route::prefix('dashboard')->group(function () {
+    //     return view('dashboard');
+    // });
 
     Route::get('/dashboard', function () {
         return view('dashboard');
     });
+
     Route::get('/scaping', [TestScapingWebController::class, 'index']);
     Route::get('scapping/genData', [TestScapingWebController::class, 'genData']);
 
@@ -112,5 +124,10 @@ Route::group(['middleware' => ['haslogin']], function () {
         Route::post('/banksave', [FinanceCashController::class, 'bankSave']);
         Route::post('/ewalletsave', [FinanceCashController::class, 'eWalletsave']);
         Route::post('/expenseclaimsave', [FinanceCashController::class, 'expenseClaimSave']);
+        Route::get('/cash/edit/{id}', [FinanceCashController::class, 'pageCashEdit']);
+        Route::get('/bank/edit/{id}', [FinanceCashController::class, 'pageBankEdit']);
+        Route::get('/ew/edit/{id}', [FinanceCashController::class, 'pageEwEdit']);
     });
+
+    Route::resource('documents', DocumentController::class);
 });

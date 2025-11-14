@@ -48,7 +48,7 @@ class RoleController extends BaseController
                                             IF( p.is_delete is not null, p.is_delete, 0) as is_delete ,
                                             IF( p.is_import is not null, p.is_import, 0) as is_import ,
                                             IF( p.is_export is not null, p.is_export, 0) as is_export
-                                         from func f 
+                                         from function_tb f 
                                             left join permissions p on f.func_id = p.func_id and p.role_id = $id
                                             order by func_id asc");
         if(empty($roles)) {

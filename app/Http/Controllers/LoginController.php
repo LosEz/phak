@@ -43,9 +43,9 @@ class LoginController extends BaseController
 
                 $users = DB::select("SELECT * FROM users where id = $result->user_id")[0];
 
-                $func = DB::select("select p.func_id, f.func_name, f.func_sub_menu, f. func_url , p.is_add, p.is_edit
+                $func = DB::select("select p.func_id, f.func_name, f.menu_id, f.func_url , p.is_add, p.is_edit
                                             , p.is_delete, p.is_import, p.is_export  from permissions p 
-                                inner join func f on p.func_id = f.func_id
+                                inner join function_tb f on p.func_id = f.func_id
                                 WHERE p.is_view = true and p.role_id = $users->role_id 
                                 Order by f.func_id, f.func_seq asc");
 

@@ -35,6 +35,8 @@
 
         <br/>
 
+        <button onclick="window.scanner()">printing</button>
+
         <div class="container-header-test">
             <div class="left-group" style="padding-left: 10px; padding-right: 10px;">
                 <h5 id="accCount">ช่องทางการเงินทั้งหมด 0 บัญชี</h5>
@@ -47,36 +49,6 @@
         <div id="cashdetail">
 
         </div>
-
-        {{-- <div style="padding-left: 10px; padding-right: 10px;">
-            <div class="row">
-                <label class="col-form-label" style="font-size: 22px; font-weight: bold; padding-left: 20px">เงินฝากธนาคาร 10 บัญชี</label>
-                <p class="col-form-label" style="padding-top: 12px; padding-left: 20px">รวม 600,000 บาท</p>
-            </div>
-        </div>
-        <br/>
-        <div style="padding-left: 10px; padding-right: 10px;">
-            <div class="row"> 
-                @for ($i = 0; $i < 10; $i++)
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Earnings (Monthly)</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
-            </div>
-        </div> --}}
     </div>
 </div>
 
@@ -107,6 +79,7 @@
                         headData = "";
 
                         let head = data[i]['head'];
+                        let path = data[i]['path'];
                         let sub = data[i]['sub'];
 
                         headData += `<div style="padding-left: 10px; padding-right: 10px;">
@@ -125,6 +98,7 @@
 
                             subData += `<div class="col-xl-3 col-md-6 mb-4">
                                 <div class="card border-left-primary shadow h-100 py-2">
+                                    <a href="{{ url('')}}/${path}${details['id']}">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
@@ -137,6 +111,7 @@
                                     </div>
                                     <hr/>
                                     <div class="text-s mb-0 font-weight-bold text-gray-800" style="padding-left: 20px;">${details['code']}</div>
+                                    </a>
                                 </div>
                             </div>`;
 

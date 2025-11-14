@@ -57,10 +57,10 @@ class FinanceCashController extends BaseController
         
         $accCount = 0;
         
-        $cashs = DB::select("select cash_code as code, concat(cash_name,' - ', cash_name) as headname, cash_name as subname, 'bank_logo/cash.png' as bankIcon from finance_cashs");
-        $banks = DB::select("select fb.bank_code as code, concat(bat.type_name, ' - ', fb.bank_acc_number) as headname, fb.bank_acc_name as subname, b.bank_logo as bankIcon from finance_banks fb inner join banks b on fb.bank_id = b.id 
+        $cashs = DB::select("select id, cash_code as code, concat(cash_name,' - ', cash_name) as headname, cash_name as subname, 'bank_logo/cash.png' as bankIcon from finance_cashs");
+        $banks = DB::select("select fb.id, fb.bank_code as code, concat(bat.type_name, ' - ', fb.bank_acc_number) as headname, fb.bank_acc_name as subname, b.bank_logo as bankIcon from finance_banks fb inner join banks b on fb.bank_id = b.id 
                                         inner join bank_acc_type bat on fb.bank_acc_type_id = bat.id");
-        $ewallet = DB::select("select fe.ew_code as code, concat(ep.provider_name, ' - ', fe.ew_acc_number) as headname, fe.ew_acc_name as subname, ep.provider_icon as bankIcon from finance_ewallets fe 
+        $ewallet = DB::select("select fe.id, fe.ew_code as code, concat(ep.provider_name, ' - ', fe.ew_acc_number) as headname, fe.ew_acc_name as subname, ep.provider_icon as bankIcon from finance_ewallets fe 
                                         inner join ewallet_provider ep on fe.ew_provider_id = ep.id");
 
         $accCount += count($cashs);
@@ -70,9 +70,9 @@ class FinanceCashController extends BaseController
 
         $data = array();
 
-        $dataCash = array("head" => "เงินสด " . count($cashs) . " บัญชี", "sub" => $cashs);
-        $dataBank = array("head" => "เงินฝากธนาคาร " . count($banks) . " บัญชี", "sub" => $banks);
-        $dataEwallet = array("head" => "กระเป๋าเงินอิเล็กทรอนิกส์ " . count($ewallet) . " บัญชี", "sub" => $ewallet);
+        $dataCash = array("head" => "เงินสด " . count($cashs) . " บัญชี", "sub" => $cashs, "path" => "cashs/cash/edit/");
+        $dataBank = array("head" => "เงินฝากธนาคาร " . count($banks) . " บัญชี", "sub" => $banks, "path" => "cashs/bank/edit/");
+        $dataEwallet = array("head" => "กระเป๋าเงินอิเล็กทรอนิกส์ " . count($ewallet) . " บัญชี", "sub" => $ewallet, "path" => "cashs/ew/edit/");
 
         
         array_push($data, $dataCash);
@@ -94,16 +94,34 @@ class FinanceCashController extends BaseController
         return view('financeCashAdd',['banks' => $banks, 'bankTypes' => $banksType, 'accounts' => $account, 'provider' => $ew_provider]);
     }
 
-    public function pageEdit($id = 0)
+    public function pageCashEdit($id = 0)
     {
         Log::info('[' . __METHOD__ . ']');
 
-        $contact = DB::select("SELECT * FROM contacts WHERE id = $id");
-        if(empty($contact)) {
-            return view('404');
-        }
-        return view('contactEdit', ["contact" => $contact[0]]);
+
+
+        return view('financeCashEdit');
     }
+
+    public function pageBankEdit($id = 0)
+    {
+        Log::info('[' . __METHOD__ . ']');
+
+
+
+        return view('financeCashEdit');
+    }
+
+
+    public function pageEwEdit($id = 0)
+    {
+        Log::info('[' . __METHOD__ . ']');
+
+
+
+        return view('financeCashEdit');
+    }
+
 
     public function cashSave(Request $request)
     {

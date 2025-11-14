@@ -18,7 +18,7 @@
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <span>Dashboard</span></a>
                 </li>
-                @elseif($menu->func_sub_menu == 0)
+                @elseif($menu->menu_id == 0)
               
                  <!-- Divider -->
                     <hr class="sidebar-divider">
@@ -55,7 +55,6 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>pdf</span></a>
             </li>
-
 
             {{-- <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
