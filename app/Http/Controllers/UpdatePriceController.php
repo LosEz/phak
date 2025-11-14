@@ -19,9 +19,9 @@ class UpdatePriceController extends Controller
         }
 
         // 3. สร้าง Public URL จาก 'file_path' (ตามรูปของคุณ)
-        $publicUrl = Storage::url($latestFile->id);
+        //$publicUrl = Storage::url($latestFile->id);
 
-        //$publicUrl = "http://localhost:8888/phak/public/documents/" . $latestFile->id;
+        $publicUrl = "documents/" . $latestFile->id;
 
         // 4. ส่งไปที่ View
         return view('updateprice', [
